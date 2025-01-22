@@ -1,6 +1,6 @@
 ---
-title: "Sample Report - Data Science Capstone"
-author: "Student name"
+title: "Lasso Report - Data Science Capstone"
+author: "Mathari Pavani"
 date: '`r Sys.Date()`'
 format:
   html:

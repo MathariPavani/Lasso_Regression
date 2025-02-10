@@ -1,7 +1,7 @@
 ---
-title: "Feature Selection for House Price Prediction - LASSO Regression for Data Science Project - spring 2025"
-subtitle: "This is a Report Template Quarto"
-author: "Mathari Pavani and Shalini Jonnadula under Dr. Cohen"
+title: "Feature Selection for House Price Prediction "
+subtitle: "LASSO Regression for Data Science Project - spring 2025 "
+author: "Mathari Pavani and Shalini Jonnadula "
 date: '`r Sys.Date()`'
 format:
   html:

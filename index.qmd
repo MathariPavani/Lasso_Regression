@@ -18,8 +18,6 @@ editor:
     wrap: 72
 ---
 
-Data Set: [AMES Housing Dataset](https://www.kaggle.com/datasets/prevek18/ames-housing-dataset)
-<br>
 Slides: [slides.html](slides.html){target="_blank"} ( Go to `slides.qmd`
 to edit)
 
@@ -53,11 +51,21 @@ The objective of this project is to provide valuable information regarding the w
 
 LASSO regression is one of the most important contributors to model sparsity and predictive accuracy, particularly when handling high-dimensional data. In Huan Xu, Constantine Caramanis, and Shie Mannor's work, the authors describe the connection between robust regression and LASSO, showing that under certain uncertainty conditions, the robust regression problem is equivalent to LASSO. This connection is important as it shows how LASSO can offer robustness to outliers while preserving the sparsity property, which is very important for feature selection. This sparsity and robustness concept is highly applicable to our project, where LASSO will be used to choose the most significant features to use in predicting house prices. The idea that LASSO can handle noisy data and still select important predictors resonates with our goal of building a stable and accurate model of house prices.[@xu2012robust]
 
+A statistical method called LASSO regression is used to solve problems in predictive modelling, such as overfitting and optimism bias, particularly when working with big datasets and many of possible predictors. By essentially eliminating less significant variables, it reduces model complexity and enhances generalisation by lowering regression coefficients towards zero. The parameter (λ), which controls the amount of shrinkage, is usually chosen using k-fold cross-validation. [@jonas2018lasso]   
+
 In the paper by Carter Hill, the author explains how both LASSO and Ridge regression serve as alternatives to the traditional least squares regression, especially in the context of high-dimensional datasets. Hill discusses how both methods help mitigate overfitting, a common issue when working with a large number of predictors, and select the most important features for prediction. While Ridge regression penalizes the size of the coefficients, LASSO tends to shrink some coefficients to zero, effectively performing feature selection. Hill emphasizes the advantages of these methods in improving model interpretability and predictive accuracy. However, both methods have limitations in distinguishing correlation from causation, which is an important consideration in practical applications. This paper is particularly valuable for our project as it provides a foundation for understanding how LASSO helps in selecting the most predictive features for house price estimation by addressing overfitting and ensuring that only relevant variables are included.[@hill2016explaining]
 
 The paper by Trevor Hastie, Robert Tibshirani, and Martin Wainwright provides a comprehensive review of LASSO in high-dimensional regression, covering its theoretical properties, including sparsity and oracle inequalities. It also explores practical aspects like coordinate descent algorithms and extensions such as Elastic Net, Group LASSO, and Adaptive LASSO. These extensions address challenges like multicollinearity and grouped variable selection. This paper’s insights on the theory and applications of LASSO, along with its comparisons to other regularization techniques, will help guide the application of LASSO in our house price prediction project by offering valuable methods for dealing with high-dimensional datasets.[@hastie2015lasso]
 
-The paper by Ji Hyung Lee, Zhentao Shi, and Zhan Gao explores the use of LASSO in predictive regression when some regressors are heterogeneous time series. They discuss the limitations of Adaptive LASSO in such cases, where it cannot completely eliminate inactive cointegrating variables. To address this, the authors introduce Twin Adaptive LASSO (TAlasso), a two-step selection method. Their method improves consistency and enhances the prediction accuracy for datasets involving mixed-root regressors. This paper will help in understanding how LASSO-based methods can be extended for better accuracy in predictive modeling for house price prediction when handling complex relationships in the data.[@lee2020lasso]
+The paper by Ji Hyung Lee, Zhentao Shi, and Zhan Gao explores the use of LASSO in predictive regression when some regressors are heterogeneous time series. They discuss the limitations of Adaptive LASSO in such cases, where it cannot completely eliminate inactive cointegrating variables. To address this, the authors introduce Twin Adaptive LASSO (TAlasso), a two-step selection method. Their method improves consistency and enhances the prediction accuracy for datasets involving mixed-root regressors. This paper will help in understanding how LASSO-based methods can be extended for better accuracy in predictive modeling for house price prediction when handling complex relationships in the data.[@lee2020lasso] 
+
+This paper's main objective is to increase the accuracy of temperature forecasting in smart buildings by optimising HVAC (heating, ventilation, and air conditioning) systems through the use of model predictive controllers (MPC). This upgrade aims to keep building occupants comfortable while lowering energy use.[@spencer2018refinement]
+
+The purpose of this work is to examine how to choose the most informative genetic markers and phenotypic characteristics associated with a variable of interest using Least Absolute Shrinkage and Selection Operator (LASSO) regression. The objective is to use both genetic and phenotypic data to enhance risk prediction algorithms.[@fontanarosa2011lasso]
+
+The paper addresses the interference from suspended particles, particularly in high turbidity conditions, by proposing a unique online water quality measurement approach for wastewater treatment plants. Inaccurate detection results from traditional methods' frequent disregard for the organic components in suspended particles. The study presents a combined method to address this issue, minimising chemical and physical interferences by using UV-vis spectroscopy to track substance alteration during the oxidative digestion process. A brand-new machine learning method called Bidirectional Dictionary LASSO Regression (BD-LASSO) is also created. By learning spectral and feature information, BD-LASSO enhances the extraction of pertinent data, decreases turbidity interference, and increases detection speed and accuracy speed and accuracy.[@geng2023bidirectional]
+
+Because traditional plant breeding is expensive and time-consuming, cutting-edge techniques like machine learning and remote sensing are required to increase wheat output. This work investigates the use of LASSO regression and Support Vector Regression (SVR) in conjunction with Sequential Forward Selection (SFS) to forecast wheat grain yield using vegetation indices based on Unmanned Aerial Vehicles (UAVs). The study derived vegetation indices (NDVI, EVI, and MTCI) from multispectral UAV photos at various development stages using data from 600 wheat plots in Norway (2018).The NDVI was the best indicator of grain yield, according to the results, and it got better as the plants grew older. Model accuracy was improved by include EVI and MTCI at earlier growth stages. Up to 90% of yield fluctuation was explained by models that included all indices and time periods. Collinearity was added by adding distinct spectral bands, but prediction accuracy was not increased. LASSO regression proved more effective and computationally less expensive, even though both machine learning techniques performed well.[@shafiee2021sequential]
 
 Together, these papers will guide our approach to using LASSO for feature selection, ensuring robustness, accuracy, and interpretability in our house price prediction model. Each study presents a facet of LASSO's potential that can be leveraged to optimize our model and handle the complexity of high-dimensional housing data effectively.
 
@@ -91,41 +99,96 @@ $$
 ## Analysis and Results
 
 ### Data Exploration and Visualization
+  
+#### AMES HOUSING DATA: [AMES Housing Dataset](https://www.kaggle.com/datasets/prevek18/ames-housing-dataset)
+The Ames Housing Dataset is a well-known dataset used for predictive modeling and machine learning tasks, especially for regression problems. It contains detailed information about various features of residential properties in Ames, Iowa, and their sale prices. This dataset is often used for house price prediction challenges.
 
--   Describe your data sources and collection process.
+#####  Data Description
+The dataset contains 2930 observations and 81 predictor variables. These variables include both numeric and categorical data that represent various characteristics of the properties, such as the size of the house, construction materials, condition, and various other factors influencing the sale price.
 
--   Present initial findings and insights through visualizations.
+###### Key Features:
+- **Lot Area**: Size of the lot in square feet.
+- **Overall Quality**: A rating of the overall material and finish of the house.
+- **Gr Liv Area**: Above grade (ground) living area in square feet.
+- **TotRms AbvGrd**: Total rooms above ground.
+- **Year Built**: The year the house was built.
+- **Year Remodeled**: The year the house was remodeled.
+- **Garage Cars**: Number of cars the garage can accommodate.
+- **Garage Area**: Size of the garage in square feet.
+- **Pool Area**: Size of the pool area in square feet (if applicable).
+- **SalePrice**: The target variable, representing the sale price of the house.
 
--   Highlight unexpected patterns or anomalies.
+Summary of Variable Types:
 
-A study was conducted to determine how...
+- Numerical Variables: 38
+- Categorical Variables: 24
+- Ordinal Variables: 19
 
+##### Data Sources and Collection Process
+
+The Ames Housing dataset was compiled and collected by a team at **Iowa State University** for the purpose of housing price prediction and machine learning tasks. The data was gathered from several sources:
+
+- **Public Data**: The dataset is derived from publicly available real estate sale records in Ames, Iowa, and has been widely used in machine learning research, including Kaggle competitions.
+  
+- **Data Collection**: Information was sourced from real estate listings and property assessments. These were manually compiled and processed to ensure the dataset was appropriate for analysis and predictive modeling tasks.
+
+- **Variable Details**: The dataset includes both continuous and discrete variables representing a range of property features, such as building material types, home styles, and the overall condition of the house.
+
+- **Noisy and Missing Data**: As typical with real-world datasets, this dataset contains some missing values, requiring data cleaning and imputation before use in modeling.
+
+- **Target Variable (SalePrice)**: The target variable, **SalePrice**, represents the sale price of the house, making this a regression problem.
+
+##### Dataset Usage
+
+This dataset has been used for:
+
+- **Machine Learning Competitions**: Such as the Kaggle Ames Housing Price Prediction competition.
+- **Educational Purposes**: Teaching data cleaning, feature engineering, and model-building techniques in machine learning courses.
+- **Predictive Modeling**: The dataset is often used to build models for predicting house prices based on various attributes.
+
+<!-- Highlight unexpected patterns or anomalies.
+
+A study was conducted to determine how... -->
+
+**Loading packages**
 ```{r, warning=FALSE, echo=T, message=FALSE}
-# loading packages 
-library(tidyverse)
-library(knitr)
-library(ggthemes)
-library(ggrepel)
-library(dslabs)
+library(ggplot2)
+library(dplyr)
 ```
 
+**Data Loading and Initial Inspection**
 ```{r, warning=FALSE, echo=TRUE}
-# Load Data
-kable(head(murders))
+ames_data <- read.csv("AmesHousing.csv")
+head(ames_data,3)
+cat("Number of observations:", nrow(ames_data), "\n")
+cat("Number of features:", ncol(ames_data), "\n")
+```
+**Visualization**
+```{r, warning=FALSE, echo=TRUE}
+#Box plot of Categorical Variable
+ggplot(ames_data, aes(x = Neighborhood)) +
+  geom_bar(fill = 'skyblue', color = 'black', alpha = 0.7) +
+  labs(title = "Count of Houses by Neighborhood", x = "Neighborhood", y = "Count") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) + # Rotate x-axis labels
+  theme_minimal()
+# Box plot Categorical vs. Continuous
+ggplot(ames_data, aes(x = Neighborhood, y = SalePrice)) +
+  geom_boxplot(fill = 'orange', color = 'black', alpha = 0.7) +
+  labs(title = "Sale Price by Neighborhood", x = "Neighborhood", y = "Sale Price") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) + # Rotate x-axis labels
+  theme_minimal()
 
-ggplot1 = murders %>% ggplot(mapping = aes(x=population/10^6, y=total)) 
+#Count Plot for Another Categorical Variable
+ggplot(ames_data, aes(x = Exter.Cond)) +
+  geom_bar(fill = 'purple', color = 'black', alpha = 0.7) +
+  labs(title = "Count of Houses by Exterior Condition", x = "Exterior Condition", y = "Count") +
+  theme_minimal()
 
-  ggplot1 + geom_point(aes(col=region), size = 4) +
-  geom_text_repel(aes(label=abb)) +
-  scale_x_log10() +
-  scale_y_log10() +
-  geom_smooth(formula = "y~x", method=lm,se = F)+
-  xlab("Populations in millions (log10 scale)") + 
-  ylab("Total number of murders (log10 scale)") +
-  ggtitle("US Gun Murders in 2010") +
-  scale_color_discrete(name = "Region")+
-      theme_bw()
-  
+ggplot(ames_data, aes(x = Garage.Finish, fill = factor(SalePrice > median(SalePrice)))) +
+  geom_bar(position = "fill") +
+  labs(title = "Proportion of High vs Low Sale Prices by Garage Finish", x = "Garage Finish", y = "Proportion") +
+  scale_fill_manual(values = c("red", "green"), labels = c("Low", "High")) +
+  theme_minimal()
 
 ```
 

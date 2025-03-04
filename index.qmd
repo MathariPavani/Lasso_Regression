@@ -266,7 +266,6 @@ ames_data$HasFireplace <- ifelse(ames_data$Fireplaces > 0, 1, 0)
 ames_data$HasMiscFeature <- ifelse(!is.na(ames_data$Misc.Feature), 1, 0)
 ames_data$OverallQualityScore <- ames_data$Overall.Qual * ames_data$Overall.Cond
 
-# Check the first few rows of the new dataset
 ```
 
 **# Creating new dataset with requried features **

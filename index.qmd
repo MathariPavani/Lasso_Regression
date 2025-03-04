@@ -21,7 +21,7 @@ editor:
 Slides: [slides.html](slides.html){target="_blank"} ( Go to `slides.qmd`
 to edit)
 
-::: callout-important
+<!--::: callout-important
 **Remember:** Your goal is to make your audience understand and care
 about your findings. By crafting a compelling story, you can effectively
 communicate the value of your data science project.
@@ -29,6 +29,7 @@ communicate the value of your data science project.
 Carefully read this template since it has instructions and tips to
 writing!
 :::
+-->
 
 ## Introduction
 
@@ -71,128 +72,294 @@ Together, these papers will guide our approach to using LASSO for feature select
 
 ## Methods
 
--   Detail the models or algorithms used.
+### Overview of Lasso Regression
 
--   Justify your choices based on the problem and data.
+**Lasso Regression (Least Absolute Shrinkage and Selection Operator)** is a type of linear regression that includes an L1 regularization term in its loss function. The regularization term penalizes the coefficients of less important features, shrinking them towards zero and effectively performing feature selection. This makes Lasso particularly useful when working with high-dimensional datasets that may have irrelevant or redundant features, as it helps to simplify the model and reduce overfitting.
 
-*The common non-parametric regression model is*
-$Y_i = m(X_i) + \varepsilon_i$*, where* $Y_i$ *can be defined as the sum
-of the regression function value* $m(x)$ *for* $X_i$*. Here* $m(x)$ *is
-unknown and* $\varepsilon_i$ *some errors. With the help of this
-definition, we can create the estimation for local averaging i.e.*
-$m(x)$ *can be estimated with the product of* $Y_i$ *average and* $X_i$
-*is near to* $x$*. In other words, this means that we are discovering
-the line through the data points with the help of surrounding data
-points. The estimation formula is printed below [@R-base]:*
+Lasso regression modifies the standard linear regression objective function by adding the L1 penalty term:
+$$
+Minimize:\sum_{i=1}^n (y_i - \hat{y}^i)^2 + \lambda \sum_{j=1}^p |\beta_j|
+$$
+Where,<br>
+$y_i$  - is the actual value (sale price). <br>
+$\hat{y}_i$ -  is the predicted value.<br>
+$\beta_j$ -  represents the coefficients of the model.<br>
+$n$  - is the number of observations.<br>
+$p$ -  is the number of features (predictors).<br>
+$\lambda$  - is the regularization parameter that controls the strength of the penalty.<br>
+
+#### Formula Explanation
+In traditional linear regression:
+$$  y_i = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \cdots + \beta_p x_p + \epsilon_i $$
+Where,<br> 
+$y_i$ - is the target variable (sale price).<br>
+$x_1, x_2, \ldots, x_p$ - are the predictor variables (features such as square footage, number of bathrooms, etc.).<br>
+$\beta_0, \beta_1, \ldots, \beta_p$ - are the coefficients (parameters) of the model.<br>
+$\epsilon_i$ - represents the error term.<br>
+
+For Lasso regression, the objective function is:
 
 $$
-M_n(x) = \sum_{i=1}^{n} W_n (X_i) Y_i  \tag{1}
-$$$W_n(x)$ *is the sum of weights that belongs to all real numbers.
-Weights are positive numbers and small if* $X_i$ *is far from* $x$*.*
-
-*Another equation:*
-
+\hat{\beta} = \arg \min_{\beta} \left( \sum_{i=1}^n (y_i - \hat{y}_i)^2 + \lambda \sum_{j=1}^p |\beta_j| \right)
 $$
-y_i = \beta_0 + \beta_1 X_1 +\varepsilon_i
-$$
+
+Where $\hat{\beta}$ represents the estimated coefficients. The addition of $\lambda \sum_{j=1}^p |\beta_j|$ applies a penalty to the coefficients, pushing some of them towards zero, especially those associated with less important features.
+
+
+### Key Characteristics of Lasso Regression
+
+**1. Feature Selection: ** Lasso performs both regularization and feature selection, which is advantageous when there are many features, and some may be irrelevant to predicting the target variable. <br>
+**2. Sparse Solution:** The L1 penalty used in Lasso forces many coefficients to become exactly zero, resulting in a sparse model where only the most relevant features remain. <br>
+**3. Regularization:** Lasso prevents overfitting by shrinking the coefficients, which is particularly useful when dealing with high-dimensional data.
+
+### Impact of Lambda on Coefficients
+
+The regularization parameter $\lambda$ controls the strength of the penalty. As $\lambda$ increases, the model becomes more regularized, and more coefficients are shrunk to zero. Conversely, when $\lambda$ is small or zero, Lasso behaves like ordinary least squares regression, where no regularization occurs.
+
+### Graphical Interpretation:
+
+**Lasso Path:** The plot below shows how the coefficients of the features change as λ increases. As λ becomes larger, more coefficients shrink towards zero, resulting in a simpler and more interpretable model. <br>
+This plot demonstrates how the coefficients are penalized as λ increases, leading to the elimination of less important features. <br>
+**Cross-Validation for Lambda Selection:** The optimal λ value can be selected using cross-validation, which tests different values of λ and evaluates the model's performance. A cross-validation plot typically shows the model's error for different values of λ, with the best λ corresponding to the point where the error is minimized.
+This plot helps identify the best value of λ, which ensures the model balances complexity and generalization.
+
+### Algorithm Used for Lasso Regression
+
+**1 Data Preparation:**
+*Feature Scaling:* It is essential to scale the features before applying Lasso regression. Since Lasso involves an L1 penalty, features with larger magnitudes could disproportionately influence the regularization term. Standardizing the data (e.g., using z-scores) ensures that each feature contributes equally to the penalty. <br>
+**2 Fitting the Model:**
+The Lasso regression model is fitted using optimization techniques such as coordinate descent or Least Angle Regression (LARS). These methods iteratively minimize the objective function by adjusting the model’s coefficients. <br>
+**3 Model Evaluation:**
+After fitting the model, its performance is evaluated using metrics like Mean Squared Error (MSE), Root Mean Squared Error (RMSE), or R-squared on the test data. These metrics help assess how well the model generalizes to unseen data.<br>
+**4 Feature Selection:**
+As Lasso regression penalizes less important features, the coefficients for irrelevant features will be driven to zero, effectively performing feature selection.<br>
+
+### Justification for Using Lasso Regression
+
+**Feature Selection:** In a high-dimensional dataset like the Ames Housing dataset, many features may be irrelevant or redundant. Lasso helps reduce the model's complexity by automatically selecting the most important features.<br>
+**Handling Multicollinearity:** Lasso is robust to multicollinearity, where predictor variables are highly correlated. In such cases, Lasso assigns zero weights to some correlated features, ensuring that the model does not overfit to the noise caused by correlated predictors.<br>
+**Improved Model Interpretability:** By shrinking some coefficients to zero, Lasso creates a simpler and more interpretable model, making it easier to understand which features are most important for predicting house prices.<br>
+**Prevents Overfitting:** With the regularization term, Lasso reduces the risk of overfitting, especially when there is a large number of features relative to the number of observations. It ensures that the model remains generalizable.<br>
+
 
 ## Analysis and Results
 
 ### Data Exploration and Visualization
   
 #### AMES HOUSING DATA: [AMES Housing Dataset](https://www.kaggle.com/datasets/prevek18/ames-housing-dataset)
-The Ames Housing Dataset is a well-known dataset used for predictive modeling and machine learning tasks, especially for regression problems. It contains detailed information about various features of residential properties in Ames, Iowa, and their sale prices. This dataset is often used for house price prediction challenges.
+The Ames Housing Dataset is a popular dataset that provides detailed information about residential properties in Ames, Iowa. It was originally used in a Kaggle competition and has become widely used for machine learning and data analysis practice, particularly in regression tasks. 
 
 #####  Data Description
 The dataset contains 2930 observations and 81 predictor variables. These variables include both numeric and categorical data that represent various characteristics of the properties, such as the size of the house, construction materials, condition, and various other factors influencing the sale price.
 
-###### Key Features:
-- **Lot Area**: Size of the lot in square feet.
-- **Overall Quality**: A rating of the overall material and finish of the house.
-- **Gr Liv Area**: Above grade (ground) living area in square feet.
-- **TotRms AbvGrd**: Total rooms above ground.
-- **Year Built**: The year the house was built.
-- **Year Remodeled**: The year the house was remodeled.
-- **Garage Cars**: Number of cars the garage can accommodate.
-- **Garage Area**: Size of the garage in square feet.
-- **Pool Area**: Size of the pool area in square feet (if applicable).
-- **SalePrice**: The target variable, representing the sale price of the house.
-
 Summary of Variable Types:
-
 - Numerical Variables: 38
 - Categorical Variables: 24
 - Ordinal Variables: 19
 
-##### Data Sources and Collection Process
-
-The Ames Housing dataset was compiled and collected by a team at **Iowa State University** for the purpose of housing price prediction and machine learning tasks. The data was gathered from several sources:
-
-- **Public Data**: The dataset is derived from publicly available real estate sale records in Ames, Iowa, and has been widely used in machine learning research, including Kaggle competitions.
-  
-- **Data Collection**: Information was sourced from real estate listings and property assessments. These were manually compiled and processed to ensure the dataset was appropriate for analysis and predictive modeling tasks.
-
-- **Variable Details**: The dataset includes both continuous and discrete variables representing a range of property features, such as building material types, home styles, and the overall condition of the house.
-
-- **Noisy and Missing Data**: As typical with real-world datasets, this dataset contains some missing values, requiring data cleaning and imputation before use in modeling.
-
-- **Target Variable (SalePrice)**: The target variable, **SalePrice**, represents the sale price of the house, making this a regression problem.
-
-##### Dataset Usage
-
-This dataset has been used for:
-
-- **Machine Learning Competitions**: Such as the Kaggle Ames Housing Price Prediction competition.
-- **Educational Purposes**: Teaching data cleaning, feature engineering, and model-building techniques in machine learning courses.
-- **Predictive Modeling**: The dataset is often used to build models for predicting house prices based on various attributes.
-
-<!-- Highlight unexpected patterns or anomalies.
-
-A study was conducted to determine how... -->
-
-**Loading packages**
+**# Loading packages**
 ```{r, warning=FALSE, echo=T, message=FALSE}
 library(ggplot2)
 library(dplyr)
 ```
 
-**Data Loading and Initial Inspection**
+**# Data Loading and Initial Inspection**
 ```{r, warning=FALSE, echo=TRUE}
 ames_data <- read.csv("AmesHousing.csv")
-head(ames_data,3)
 cat("Number of observations:", nrow(ames_data), "\n")
-cat("Number of features:", ncol(ames_data), "\n")
+cat("Number of features:", ncol(ames_data), "\n") 
 ```
-**Visualization**
+
+**# Check for missing values**
 ```{r, warning=FALSE, echo=TRUE}
-#Box plot of Categorical Variable
-ggplot(ames_data, aes(x = Neighborhood)) +
-  geom_bar(fill = 'skyblue', color = 'black', alpha = 0.7) +
-  labs(title = "Count of Houses by Neighborhood", x = "Neighborhood", y = "Count") +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)) + # Rotate x-axis labels
-  theme_minimal()
-# Box plot Categorical vs. Continuous
-ggplot(ames_data, aes(x = Neighborhood, y = SalePrice)) +
-  geom_boxplot(fill = 'orange', color = 'black', alpha = 0.7) +
-  labs(title = "Sale Price by Neighborhood", x = "Neighborhood", y = "Sale Price") +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)) + # Rotate x-axis labels
-  theme_minimal()
-
-#Count Plot for Another Categorical Variable
-ggplot(ames_data, aes(x = Exter.Cond)) +
-  geom_bar(fill = 'purple', color = 'black', alpha = 0.7) +
-  labs(title = "Count of Houses by Exterior Condition", x = "Exterior Condition", y = "Count") +
-  theme_minimal()
-
-ggplot(ames_data, aes(x = Garage.Finish, fill = factor(SalePrice > median(SalePrice)))) +
-  geom_bar(position = "fill") +
-  labs(title = "Proportion of High vs Low Sale Prices by Garage Finish", x = "Garage Finish", y = "Proportion") +
-  scale_fill_manual(values = c("red", "green"), labels = c("Low", "High")) +
-  theme_minimal()
-
+missing_data <- colSums(is.na(ames_data))
+cat("Missing values per feature:\n")
+print(missing_data[missing_data > 0])
 ```
 
-### Modeling and Results
+**# Handling Missing values**
+```{r, warning=FALSE, echo=TRUE}
+# Categorical variables
+ames_data$Alley[is.na(ames_data$Alley)] <- "None"
+ames_data$Pool.QC[is.na(ames_data$Pool.QC)] <- "None"
+ames_data$Fence[is.na(ames_data$Fence)] <- "None"
+ames_data$Misc.Feature[is.na(ames_data$Misc.Feature)] <- "None"
+
+# Numerical variables (use median for continuous variables)
+ames_data$Mas.Vnr.Area[is.na(ames_data$Mas.Vnr.Area)] <- median(ames_data$Mas.Vnr.Area, na.rm = TRUE)
+# Impute missing Lot.Frontage with the median value
+ames_data$Lot.Frontage[is.na(ames_data$Lot.Frontage)] <- median(ames_data$Lot.Frontage, na.rm = TRUE)
+
+
+# basement-related values (assume 'None' for categorical and 0 for numerical)
+ames_data$Bsmt.Qual[is.na(ames_data$Bsmt.Qual)] <- "None"
+ames_data$Bsmt.Cond[is.na(ames_data$Bsmt.Cond)] <- "None"
+ames_data$Bsmt.Exposure[is.na(ames_data$Bsmt.Exposure)] <- "None"
+ames_data$BsmtFin.Type.1[is.na(ames_data$BsmtFin.Type.1)] <- "None"
+ames_data$BsmtFin.SF.1[is.na(ames_data$BsmtFin.SF.1)] <- 0
+ames_data$BsmtFin.Type.2[is.na(ames_data$BsmtFin.Type.2)] <- "None"
+ames_data$BsmtFin.SF.2[is.na(ames_data$BsmtFin.SF.2)] <- 0
+ames_data$Bsmt.Unf.SF[is.na(ames_data$Bsmt.Unf.SF)] <- 0
+ames_data$Total.Bsmt.SF[is.na(ames_data$Total.Bsmt.SF)] <- 0
+ames_data$Bsmt.Full.Bath[is.na(ames_data$Bsmt.Full.Bath)] <- 0
+ames_data$Bsmt.Half.Bath[is.na(ames_data$Bsmt.Half.Bath)] <- 0
+
+# Garage-related features (assume 'None' for categorical and 0 for numerical)
+ames_data$Garage.Type[is.na(ames_data$Garage.Type)] <- "None"
+ames_data$Garage.Yr.Blt[is.na(ames_data$Garage.Yr.Blt)] <- 0
+ames_data$Garage.Finish[is.na(ames_data$Garage.Finish)] <- "None"
+ames_data$Garage.Qual[is.na(ames_data$Garage.Qual)] <- "None"
+ames_data$Garage.Cond[is.na(ames_data$Garage.Cond)] <- "None"
+ames_data$Garage.Cars[is.na(ames_data$Garage.Cars)] <- 0
+ames_data$Garage.Area[is.na(ames_data$Garage.Area)] <- 0
+
+# Fireplaces
+ames_data$Fireplace.Qu[is.na(ames_data$Fireplace.Qu)] <- "None"
+
+# Check if all missing values are handled
+cat("Missing values per feature after imputation:\n")
+missing_data_after <- colSums(is.na(ames_data))
+print(missing_data_after[missing_data_after > 0])
+```
+
+
+###### Key Features:
+The dataset has been refined to focus on a subset of 11 key features, which are selected based on their relevance to predicting the SalePrice of properties. These features include a combination of both numerical and binary categorical data, representing essential characteristics of the properties, such as total living space, house age, garage size, and amenities. The selected features are:
+
+- **SalePrice**: This is the target variable, representing the sale price of the house.
+- **TotalBathrooms:** A combined measure of the total number of bathrooms (full + half).
+- **TotalSquareFootage:** Total square footage combining living space and basement areas.
+- **HouseAge:** Age of the house at the time of sale.
+- **TotalGarageSize:** Combined size of the garage area and car capacity.
+- **TotalPorchArea:** Combined porch areas across multiple types of porches.
+- **HasPool:** Indicator of whether the property has a pool.
+- **HasFence:** Indicator of whether the property has a fence.
+- **HasFireplace:** Indicator of whether the property has a fireplace.
+- **HasMiscFeature:** Indicator of whether the property has a miscellaneous feature (e.g., shed or tennis court).
+- **OverallQualityScore:** A composite score of the house’s overall quality and condition.
+
+These features were selected based on their importance in influencing the SalePrice and were combined from various original variables in the dataset. <p>
+**# Create new features**
+```{r, warning=FALSE, echo=TRUE}
+
+ames_data$TotalBathrooms <- ames_data$Full.Bath + (ames_data$Half.Bath * 0.5) + ames_data$Bsmt.Full.Bath + (ames_data$Bsmt.Half.Bath * 0.5)
+
+ames_data$TotalSquareFootage <- ames_data$Gr.Liv.Area + ames_data$BsmtFin.SF.1 + ames_data$BsmtFin.SF.2 + ames_data$X1st.Flr.SF + ames_data$X2nd.Flr.SF
+
+# Calculate House Age
+ames_data$HouseAge <- ames_data$Yr.Sold - ames_data$Year.Built
+# Calculate Garage Age (if Garage.Yr.Blt exists)
+ames_data$GarageAge <- ifelse(!is.na(ames_data$Garage.Yr.Blt), ames_data$Yr.Sold - ames_data$Garage.Yr.Blt, NA)
+# Calculate Remodel Age (if Year.Remod.Add exists)
+ames_data$RemodelAge <- ifelse(!is.na(ames_data$Year.Remod.Add), ames_data$Yr.Sold - ames_data$Year.Remod.Add, NA)
+# Combine all three into a new feature for total property age considering remodel/garage build
+ames_data$TotalPropertyAge <- pmin(ames_data$HouseAge, ames_data$GarageAge, ames_data$RemodelAge, na.rm = TRUE)
+
+
+ames_data$TotalGarageSize <- ames_data$Garage.Area + (ames_data$Garage.Cars * 200)
+
+ames_data$TotalPorchArea <- ames_data$Wood.Deck.SF + ames_data$Open.Porch.SF + ames_data$Enclosed.Porch + ames_data$X3Ssn.Porch + ames_data$Screen.Porch
+
+ames_data$HasPool <- ifelse(ames_data$Pool.Area > 0, 1, 0)
+ames_data$HasFence <- ifelse(!is.na(ames_data$Fence), 1, 0)
+ames_data$HasFireplace <- ifelse(ames_data$Fireplaces > 0, 1, 0)
+ames_data$HasMiscFeature <- ifelse(!is.na(ames_data$Misc.Feature), 1, 0)
+ames_data$OverallQualityScore <- ames_data$Overall.Qual * ames_data$Overall.Cond
+
+# Check the first few rows of the new dataset
+```
+
+**# Creating new dataset with requried features **
+```{r, warning=FALSE, echo=TRUE}
+# Select the required columns for the new dataset
+Selected_Ames_Data <- ames_data[c("SalePrice", "TotalBathrooms", "TotalSquareFootage", "HouseAge", "TotalGarageSize", "TotalPorchArea", "HasPool", "HasFence", "HasFireplace", "HasMiscFeature", "OverallQualityScore")]  
+head(Selected_Ames_Data)
+```
+
+
+**Visualization**
+```{r, fig.width=6, fig.height=4, fig.show='hold'}
+# Load necessary libraries
+library(ggplot2)
+library(scales)
+
+# 1. Distribution of SalePrice
+ggplot(ames_data, aes(x = SalePrice)) +
+  geom_histogram(binwidth = 10000, fill = "skyblue", color = "black", alpha = 0.7) +
+  scale_x_continuous(labels = label_comma())+
+  labs(title = "Distribution of SalePrice", x = "SalePrice", y = "Frequency") +
+  theme_minimal()
+
+# 2. TotalBathrooms vs SalePrice
+ggplot(ames_data, aes(x = TotalBathrooms, y = SalePrice)) +
+  geom_point(color = "blue", alpha = 0.6) +
+  geom_smooth(method = "lm", color = "red", linetype = "dashed") +
+  scale_y_continuous(labels = label_comma()) +
+  labs(title = "TotalBathrooms vs SalePrice", x = "TotalBathrooms", y = "SalePrice") +
+  theme_minimal()
+
+# 3. TotalSquareFootage vs SalePrice
+ggplot(ames_data, aes(x = TotalSquareFootage, y = SalePrice)) +
+  geom_point(color = "green", alpha = 0.6) +
+  geom_smooth(method = "lm", color = "red", linetype = "dashed") +
+  labs(title = "TotalSquareFootage vs SalePrice", x = "TotalSquareFootage", y = "SalePrice") +
+  theme_minimal()
+
+# 4. HouseAge vs SalePrice
+ggplot(ames_data, aes(x = HouseAge, y = SalePrice)) +
+  geom_point(color = "purple", alpha = 0.6) +
+  geom_smooth(method = "lm", color = "red", linetype = "dashed") +
+  scale_y_continuous(labels = label_comma()) +
+  labs(title = "HouseAge vs SalePrice", x = "HouseAge", y = "SalePrice") +
+  theme_minimal()
+
+# 5. TotalGarageSize vs SalePrice
+ggplot(ames_data, aes(x = TotalGarageSize, y = SalePrice)) +
+  geom_point(color = "orange", alpha = 0.6) +
+  geom_smooth(method = "lm", color = "red", linetype = "dashed") +
+  scale_y_continuous(labels = label_comma()) +
+  labs(title = "TotalGarageSize vs SalePrice", x = "TotalGarageSize", y = "SalePrice") +
+  theme_minimal()
+
+# 6. TotalPorchArea vs SalePrice
+ggplot(ames_data, aes(x = TotalPorchArea, y = SalePrice)) +
+  geom_point(color = "brown", alpha = 0.6) +
+  geom_smooth(method = "lm", color = "red", linetype = "dashed") +
+  scale_y_continuous(labels = label_comma()) +
+  labs(title = "TotalPorchArea vs SalePrice", x = "TotalPorchArea", y = "SalePrice") +
+  theme_minimal()
+
+# 7. HasPool vs SalePrice (Bar plot)
+ggplot(ames_data, aes(x = factor(HasPool), y = SalePrice)) +
+  geom_boxplot(fill = "lightblue") +
+  scale_y_continuous(labels = label_comma()) +
+  labs(title = "HasPool vs SalePrice", x = "HasPool", y = "SalePrice") +
+  theme_minimal()
+
+# 8. HasFence vs SalePrice (Bar plot)
+ggplot(ames_data, aes(x = factor(HasFence), y = SalePrice)) +
+  geom_boxplot(fill = "lightgreen") +
+  scale_y_continuous(labels = label_comma()) +
+  labs(title = "HasFence vs SalePrice", x = "HasFence", y = "SalePrice") +
+  theme_minimal()
+
+# 9. HasFireplace vs SalePrice (Bar plot)
+ggplot(ames_data, aes(x = factor(HasFireplace), y = SalePrice)) +
+  geom_boxplot(fill = "lightcoral") +
+  scale_y_continuous(labels = label_comma()) +
+  labs(title = "HasFireplace vs SalePrice", x = "HasFireplace", y = "SalePrice") +
+  theme_minimal()
+
+# 10. OverallQualityScore vs SalePrice
+ggplot(ames_data, aes(x = OverallQualityScore, y = SalePrice)) +
+  geom_point(color = "darkred", alpha = 0.6) +
+  geom_smooth(method = "lm", color = "blue", linetype = "dashed") +
+  scale_y_continuous(labels = label_comma()) +
+  labs(title = "OverallQualityScore vs SalePrice", x = "OverallQualityScore", y = "SalePrice") +
+  theme_minimal()
+```
+
+## Modeling and Results
 
 -   Explain your data preprocessing and cleaning steps.
 
@@ -206,7 +373,7 @@ ggplot(ames_data, aes(x = Garage.Finish, fill = factor(SalePrice > median(SalePr
 
 ```
 
-### Conclusion
+## Conclusion
 
 -   Summarize your key findings.
 

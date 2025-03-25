@@ -6,6 +6,7 @@ date: '`r Sys.Date()`'
 format:
   html:
     code-fold: true
+    css: styles.css
 course: Capstone Projects in Data Science
 bibliography: references.bib # file contains bibtex for references
 #always_allow_html: true # this allows to get PDF with HTML features
@@ -97,13 +98,6 @@ $x_1, x_2, \ldots, x_p$ - are the predictor variables (features such as square f
 $\beta_0, \beta_1, \ldots, \beta_p$ - are the coefficients (parameters) of the model.<br>
 $\epsilon_i$ - represents the error term.<br>
 
-For Lasso regression, the objective function is:
-
-$$
-\hat{\beta} = \arg \min_{\beta} \left( \sum_{i=1}^n (y_i - \hat{y}_i)^2 + \lambda \sum_{j=1}^p |\beta_j| \right)
-$$
-
-Where $\hat{\beta}$ represents the estimated coefficients. The addition of $\lambda \sum_{j=1}^p |\beta_j|$ applies a penalty to the coefficients, pushing some of them towards zero, especially those associated with less important features.
 
 
 ### Key Characteristics of Lasso Regression
@@ -159,8 +153,12 @@ Summary of Variable Types:
 
 **# Loading packages**
 ```{r, warning=FALSE, echo=T, message=FALSE}
+
 library(ggplot2)
 library(dplyr)
+library(glmnet)
+library(caret)
+library(tidyverse)
 ```
 
 **# Data Loading and Initial Inspection**
@@ -266,6 +264,7 @@ ames_data$HasFireplace <- ifelse(ames_data$Fireplaces > 0, 1, 0)
 ames_data$HasMiscFeature <- ifelse(!is.na(ames_data$Misc.Feature), 1, 0)
 ames_data$OverallQualityScore <- ames_data$Overall.Qual * ames_data$Overall.Cond
 
+# Check the first few rows of the new dataset
 ```
 
 **# Creating new dataset with requried features **
@@ -275,6 +274,85 @@ Selected_Ames_Data <- ames_data[c("SalePrice", "TotalBathrooms", "TotalSquareFoo
 head(Selected_Ames_Data)
 ```
 
+**# Data Spitting  **
+```{r, warning=FALSE, echo=TRUE}
+set.seed(123)
+trainIndex <- createDataPartition(Selected_Ames_Data$SalePrice, p = 0.8, list = FALSE)
+train <- Selected_Ames_Data[trainIndex, ]
+test <- Selected_Ames_Data[-trainIndex, ]
+```
+
+**# Standardize Numerical Features**
+```{r, warning=FALSE, echo=TRUE}
+# Standardize numerical features
+preProc <- preProcess(train[, -1], method = c("center", "scale"))
+train_scaled <- predict(preProc, train)
+test_scaled <- predict(preProc, test)
+
+```
+
+**# Train the LASSO Model**
+```{r, warning=FALSE, echo=TRUE}
+# Convert to matrix for LASSO
+x_train <- model.matrix(SalePrice ~ ., train_scaled)[, -1]
+y_train <- train_scaled$SalePrice
+x_test <- model.matrix(SalePrice ~ ., test_scaled)[, -1]
+y_test <- test_scaled$SalePrice
+
+# Train LASSO model using cross-validation
+cv_lasso <- cv.glmnet(x_train, y_train, alpha = 1)
+best_lambda <- cv_lasso$lambda.min
+
+# Fit final model
+lasso_model <- glmnet(x_train, y_train, alpha = 1, lambda = best_lambda)
+
+```
+
+**# Model Evaluation**
+```{r, warning=FALSE, echo=TRUE}
+# Predict on test data
+y_pred <- predict(lasso_model, s = best_lambda, newx = x_test)
+
+# Compute MSE and R-squared
+mse <- mean((y_test - y_pred)^2)
+r_squared <- 1 - sum((y_test - y_pred)^2) / sum((y_test - mean(y_test))^2)
+
+cat("MSE:", mse, "\nR-squared:", r_squared)
+
+```
+
+```{r, warning=FALSE, echo=TRUE}
+# Extract feature importance
+lasso_coeffs <- coef(lasso_model, s = best_lambda)
+feature_importance <- data.frame(Feature = rownames(lasso_coeffs), Coefficient = as.vector(lasso_coeffs))
+feature_importance <- feature_importance[order(abs(feature_importance$Coefficient), decreasing = TRUE), ]
+
+# Display top 10 important features
+head(feature_importance, 11)
+
+```
+
+**# Cross validation **
+```{r, warning=FALSE, echo=TRUE}
+# Perform 10-fold cross-validation to evaluate the model
+cv_lasso <- cv.glmnet(x_train, y_train, alpha = 1, nfolds = 11)
+
+# Best lambda value
+best_lambda_cv <- cv_lasso$lambda.min
+cat("Best Lambda from Cross-Validation: ", best_lambda_cv, "\n")
+
+# Predict on test data using the best lambda
+lasso_cv_model <- glmnet(x_train, y_train, alpha = 1, lambda = best_lambda_cv)
+y_pred_cv <- predict(lasso_cv_model, s = best_lambda_cv, newx = x_test)
+
+# Calculate MSE and R-squared for cross-validation
+mse_cv <- mean((y_test - y_pred_cv)^2)
+r_squared_cv <- 1 - sum((y_test - y_pred_cv)^2) / sum((y_test - mean(y_test))^2)
+
+cat("MSE from Cross-Validation: ", mse_cv, "\n")
+cat("R-squared from Cross-Validation: ", r_squared_cv, "\n")
+
+```
 
 **Visualization**
 ```{r, fig.width=6, fig.height=4, fig.show='hold'}
@@ -358,24 +436,51 @@ ggplot(ames_data, aes(x = OverallQualityScore, y = SalePrice)) +
   theme_minimal()
 ```
 
-## Modeling and Results
-
--   Explain your data preprocessing and cleaning steps.
-
--   Present your key findings in a clear and concise manner.
-
--   Use visuals to support your claims.
-
--   **Tell a story about what the data reveals.**
-
+**# Residuals **
 ```{r}
+# Calculate residuals and clean up any non-finite values
+residuals_cv_clean <- na.omit(y_test - y_pred_cv)
+
+# Plot histogram of cleaned residuals without scientific notation
+ggplot(data.frame(residuals_cv_clean), aes(x = residuals_cv_clean)) +
+  geom_histogram(binwidth = 50000, fill = "lightblue", color = "black") +
+  scale_x_continuous(labels = scales::label_number()) +  # Remove scientific notation on x-axis
+  labs(title = "Residuals Distribution (Cleaned)", x = "Residuals", y = "Frequency") +
+  theme_minimal()
 
 ```
 
+
+## Modeling and Results
+
+In the data preprocessing and cleaning phase, we began by handling missing data for both categorical and numerical variables. Categorical variables like Alley, Pool.QC, Fence, and Misc.Feature were imputed with the category "None," assuming that missing values represent the absence of these features. For numerical variables such as Mas.Vnr.Area and Lot.Frontage, missing values were imputed with the median of the respective columns to avoid biasing the model. Features related to basements and garages were treated by setting missing values to "None" for categorical data and 0 for numerical data, indicating the absence of basements or garages in some cases. We also engineered new features like TotalBathrooms (combining full and half baths) and OverallQualityScore (combining overall quality and condition) to better capture the key attributes of the houses. Numerical variables were standardized to ensure all features contributed equally to the model, particularly in regularization techniques like LASSO regression.
+
+The key findings from our model show that several features significantly influence the SalePrice. The most important predictor was TotalSquareFootage, with a coefficient of 35,081.10, indicating that larger homes are strongly correlated with higher sale prices. HouseAge had a negative relationship with sale price, with an estimated decrease of 19,539.64 in price per additional year of age. OverallQualityScore also emerged as a crucial factor, with a positive coefficient of 18,144.33, suggesting that homes in better overall condition are valued higher. Features like Garage Size and the presence of a Fireplace also contributed positively to the model, with coefficients of 13,584.84 and 3,980.44, respectively. In contrast, features such as Pool, Fence, and Misc.Feature had coefficients of 0, indicating they did not significantly affect the price prediction in this model.
+
+To visually support these findings, scatter plots and histograms were created. The distribution of SalePrice revealed a right-skewed pattern, with most homes priced below $500,000 but a few high-value outliers. A scatter plot of TotalSquareFootage vs SalePrice clearly demonstrated a positive correlation, with larger homes commanding higher prices. Additionally, a boxplot comparing HasFireplace with SalePrice highlighted that homes with fireplaces tend to sell for more, reinforcing the positive relationship between specific features and house price. These visuals effectively supported the claim that the most significant predictors of home price are related to the size and quality of the home, as well as the presence of specific desirable features.
+
+After analyzing the housing data, we found that certain factors significantly impact house prices. The most important ones are:
+
+Total Square Footage: The larger the house, the higher the price.
+House Age: Older homes tend to have a lower price, likely due to wear and tear or outdated features.
+Overall Quality Score: Homes with higher quality ratings generally have higher prices.
+Garage Size: Bigger garages can increase a home's value, reflecting the importance of storage and parking.
+Interestingly, some features, like the number of bathrooms or whether the house has a pool, did not significantly affect the house price in this model. These results suggest that while many factors affect housing prices, size, age, quality, and amenities like a garage are the most impactful.
+
+By using LASSO regression, we were able to narrow down these key predictors, giving us a clear understanding of what drives house prices in this dataset. This insight can help buyers, sellers, and real estate agents make more informed decisions
+
 ## Conclusion
 
--   Summarize your key findings.
+### Key Findings:
 
--   Discuss the implications of your results.
+The most important predictors of sale price are TotalSquareFootage, HouseAge, OverallQualityScore, and TotalGarageSize. Homes with more space, higher quality, and larger garages tend to command higher prices.
+
+Features such as Pool, Fence, and Misc.Feature were not significant in predicting SalePrice, likely due to either their low prevalence or limited impact.
+
+### Implications:
+
+Homebuyers likely place the highest value on the size of the home (square footage) and its overall quality, with features such as a larger garage and fireplace adding value.
+
+Features related to the condition of the property, like OverallQualityScore, are important in pricing, suggesting that buyers are willing to pay more for homes in better condition.
 
 ## References

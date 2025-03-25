@@ -1,0 +1,13 @@
+/* Global Styles */
+body {
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(135deg);  /* Simple colorful gradient */
+    height: 100%;  /* Ensure the background covers the full viewport */
+}
+p {
+    text-align: justify;  /* Justify the text to make it align on both sides */
+    line-height: 1.5;  /* Add line height for readability */
+    font-size: 1.0em;  /* Adjust font size */
+    margin-bottom: 10px;  /* Space between paragraphs */
+}

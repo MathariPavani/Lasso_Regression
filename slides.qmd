@@ -1,13 +1,18 @@
 ---
-title: "Present a great story for data science projects"
-subtitle: "This is a Slide Template"
-author: "Students names (Advisor: Dr. Cohen)"
-date: '`r Sys.Date()`'
+title: "Feature Selection for House Price Prediction"
+authors:
+  - name: Shalini Jonnadula
+  - name: Pavani Mathari
+date: 'today'
 format:
-  revealjs
-course: Capstone Projects in Data Science
-bibliography: references.bib # file contains bibtex for references
-#always_allow_html: true # this allows to get PDF with HTML features
+  revealjs:
+    incremental: true   
+    slide-number: true
+    show-slide-number: print
+    smaller: true
+    scrollable: true
+    theme: sky
+course: IDC 6940 - Capstone Projects in Data Science
 self-contained: true
 execute: 
   warning: false
@@ -17,101 +22,787 @@ editor:
     wrap: 72
 ---
 
-::: callout-important
-**Remember:** Your goal is to make your audience understand and care
-about your findings. By crafting a compelling story, you can effectively
-communicate the value of your data science project.
+## Introduction to our Project
 
-Carefully read this template since it has instructions and tips to
-writing!
+-   The project focuses on **Lasso regression** for feature selection
+    for house price prediction.
+-   The goal is to identify the most relevant predictors to predict
+    house prices effectively.
+-   The Ames Housing dataset is used, containing 2930 observations and
+    81 predictors.
 
-More information about `revealjs`:
-<https://quarto.org/docs/reference/formats/presentations/revealjs.html>
-:::
+------------------------------------------------------------------------
 
-## Introduction  {.smaller}
+## Lasso Regression Overview
 
--   Develop a storyline that captures attention and maintains interest.
+-   **Lasso (Least Absolute Shrinkage and Selection Operator)** is a
+    regression method that performs both **variable selection** and
+    **regularization**.
+-   It adds a penalty term to the loss function proportional to the
+    absolute value of the coefficients.
+-   This penalty encourages simpler models, with many coefficients being
+    shrunk to zero.
 
--   Your audience is your peers
+------------------------------------------------------------------------
 
--   Clearly state the problem or question you're addressing.
+# Applications and Limitations
 
--   Introduce why it is relevant needs.
+## Applications of Lasso Regression
 
--   Provide an overview of your approach.
+-   **Feature Selection**: Lasso is widely used to reduce the number of
+    features in datasets by setting some coefficients to zero. This is
+    especially useful in high-dimensional data.
+-   **Predictive Modeling**: Used in predicting outcomes such as house
+    prices, stock market prices, and more, by selecting the most
+    relevant variables.
+-   **Bioinformatics**: In gene expression data analysis, Lasso helps
+    identify significant genes by shrinking unimportant ones to zero.
+-   **Medical Diagnostics**: Lasso is applied to select relevant
+    biomarkers from large-scale clinical data.
 
-In kernel estimator, weight function is known as kernel function
-[@efr2008]. Cite this paper [@bro2014principal]. The GEE [@wang2014].
-The PCA [@daffertshofer2004pca]\*
+## Limitations of Lasso Regression
 
-## Methods
+-   **Sensitivity to Correlated Features**: Lasso tends to arbitrarily
+    select one feature from a group of correlated features, potentially
+    ignoring others that might be important.
+-   **Choosing Optimal λ**: The selection of the regularization
+    parameter λ is crucial and might be challenging, especially when the
+    optimal value is not clear.
+-   **Non-Linear Relationships**: Lasso may not perform well with
+    non-linear relationships between features and target variables.
+-   **Computational Complexity**: While generally efficient, the
+    computation can be intensive for extremely large datasets.
 
--   Detail the models or algorithms used.
+------------------------------------------------------------------------
 
--   Justify your choices based on the problem and data.
+# Methodology
 
+## Overview of Lasso Regression
 
+-   **Lasso regression** performs linear regression while imposing an L1
+    penalty on the regression coefficients.
+-   The model minimizes the sum of squared residuals while adding the
+    penalty term proportional to the sum of the absolute values of the
+    coefficients.
 
-## Data Exploration and Visualization
+## Key Characteristics of Lasso Regression
 
--   Describe your data sources and collection process.
+-   **Variable Selection**: Lasso inherently performs variable selection
+    by shrinking less important coefficients to zero.
+-   **Regularization**: Helps prevent overfitting by adding a penalty to
+    the model’s complexity, thus improving generalization.
+-   **Sparsity**: Lasso tends to create sparse models where only a small
+    number of features remain relevant.
 
--   Present initial findings and insights through visualizations.
+## Impact of Lambda (λ) on Coefficients
 
--   Highlight unexpected patterns or anomalies.
+-   The regularization parameter **λ** controls the strength of the
+    penalty.
+    -   **As λ increases**: More coefficients are driven to zero,
+        resulting in a simpler and more interpretable model.
+    -   **As λ decreases**: The model becomes more complex, and fewer
+        coefficients are penalized.
 
-## Data Exploration and Visualization {.smaller}
+## Graphical Interpretation
 
-A study was conducted to determine how...
+### Lasso Path
 
-```{r, warning=FALSE, echo=F, message=FALSE}
-# loading packages 
-library(tidyverse)
-library(knitr)
-library(ggthemes)
-library(ggrepel)
-library(dslabs)
+-   The **Lasso path** plot shows how the coefficients of the features
+    change as λ increases.
+    -   As λ becomes larger, more coefficients shrink towards zero,
+        resulting in a simpler model.
+    -   This plot demonstrates how coefficients are penalized as λ
+        increases, leading to the elimination of less important
+        features. ![](path/to/your/lasso_path_plot)
+        <!-- Image placeholder for Lasso Path plot -->
+
+### Cross-Validation for Lambda Selection
+
+-   **Cross-validation** is used to select the optimal λ value.
+    -   A **cross-validation plot** shows the model’s error for
+        different values of λ, with the best λ corresponding to the
+        point where the error is minimized.
+    -   This plot helps balance model complexity and generalization by
+        selecting the λ that yields the lowest error.
+        ![](path/to/your/cross_validation_plot)
+        <!-- Image placeholder for Cross-Validation plot -->
+
+## Algorithm Used for Lasso Regression
+
+-   **Coordinate Descent**: An efficient algorithm for solving the Lasso
+    regression problem by iterating over each coefficient and updating
+    it while fixing others.
+-   **Pathwise Coordinate Optimization**: This method efficiently
+    computes the entire regularization path of Lasso solutions.
+
+## Justification for Using Lasso Regression
+
+-   Lasso regression is particularly useful for high-dimensional
+    datasets like the Ames Housing dataset, where the number of
+    predictors is large.
+-   It not only improves predictive performance by regularizing the
+    model but also provides an automatic method for feature selection.
+-   Lasso helps identify the most influential predictors, simplifying
+    the model and improving its interpretability.
+
+------------------------------------------------------------------------
+
+# Data Overview and Feature Selection
+
+## DataOverview
+
+::: panel-tabset
+## Data Description {.hscroll .scrollable}
+
+The Ames Housing Dataset is a popular dataset that provides detailed
+information about residential properties in Ames, Iowa. It was
+originally used in a Kaggle competition and has become widely used for
+machine learning and data analysis practice, particularly in regression
+tasks.
+
+[[*Link to AMES Housing data
+documentation*]{.underline}](https://www.kaggle.com/datasets/prevek18/ames-housing-dataset){style="color: blue;"}
+
+| Variable | Variable Type | Description |
+|--------------|--------------|---------------------------------------------|
+| SalePrice | Numerical | Sale price of the house (target variable) in USD |
+| MSSubClass | Categorical | Identifies the type of dwelling |
+| MSZoning | Categorical | General zoning classification |
+| LotFrontage | Numerical | Linear feet of street connected to property |
+| LotArea | Numerical | Lot size in square feet |
+| Street | Categorical | Type of road access |
+| Alley | Categorical | Type of alley access |
+| LotShape | Ordinal | General shape of property |
+| LandContour | Categorical | Flatness of the property |
+| Utilities | Categorical | Type of utilities available |
+| LotConfig | Categorical | Lot configuration |
+| LandSlope | Ordinal | Slope of property |
+| Neighborhood | Categorical | Physical locations within Ames |
+| Condition1 | Categorical | Proximity to main roads/railroads |
+| Condition2 | Categorical | Additional proximity to main roads/railroads |
+| BldgType | Categorical | Type of dwelling |
+| HouseStyle | Categorical | Style of dwelling |
+| OverallQual | Ordinal | Overall material and finish quality |
+| OverallCond | Ordinal | Overall condition rating |
+| YearBuilt | Numerical | Original construction year |
+| YearRemodAdd | Numerical | Remodel year (same as construction year if no remodel) |
+| RoofStyle | Categorical | Type of roof |
+| RoofMatl | Categorical | Roof material |
+| Exterior1st | Categorical | Primary exterior material |
+| Exterior2nd | Categorical | Secondary exterior material |
+| MasVnrType | Categorical | Masonry veneer type |
+| MasVnrArea | Numerical | Masonry veneer area in square feet |
+| Foundation | Categorical | Type of foundation |
+| BsmtQual | Ordinal | Height of basement |
+| BsmtCond | Ordinal | General basement condition |
+| BsmtExposure | Ordinal | Walkout or garden-level basement walls |
+| BsmtFinType1 | Ordinal | Quality of finished basement area |
+| BsmtFinSF1 | Numerical | Type 1 finished square feet |
+| BsmtFinType2 | Ordinal | Quality of second finished basement area |
+| BsmtFinSF2 | Numerical | Type 2 finished square feet |
+| BsmtUnfSF | Numerical | Unfinished basement square feet |
+| TotalBsmtSF | Numerical | Total basement square feet |
+| Heating | Categorical | Type of heating |
+| HeatingQC | Ordinal | Heating quality and condition |
+| CentralAir | Categorical | Central air conditioning (Y/N) |
+| Electrical | Categorical | Electrical system type |
+| `1stFlrSF` | Numerical | First floor square footage |
+| `2ndFlrSF` | Numerical | Second floor square footage |
+| LowQualFinSF | Numerical | Low-quality finished square feet |
+| GrLivArea | Numerical | Above ground living area square feet |
+| BsmtFullBath | Numerical | Number of full bathrooms in basement |
+| BsmtHalfBath | Numerical | Number of half bathrooms in basement |
+| FullBath | Numerical | Number of full bathrooms above grade |
+| HalfBath | Numerical | Number of half bathrooms above grade |
+| BedroomAbvGr | Numerical | Number of bedrooms above basement level |
+| KitchenAbvGr | Numerical | Number of kitchens |
+| KitchenQual | Ordinal | Kitchen quality |
+| TotRmsAbvGrd | Numerical | Total number of rooms above ground (excluding bathrooms) |
+| Functional | Ordinal | Home functionality rating |
+| Fireplaces | Numerical | Number of fireplaces |
+| FireplaceQu | Ordinal | Fireplace quality |
+| GarageType | Categorical | Location of garage |
+| GarageYrBlt | Numerical | Year garage was built |
+| GarageFinish | Ordinal | Interior finish of garage |
+| GarageCars | Numerical | Size of garage in car capacity |
+| GarageArea | Numerical | Size of garage in square feet |
+| GarageQual | Ordinal | Garage quality |
+| GarageCond | Ordinal | Garage condition |
+| PavedDrive | Ordinal | Paved driveway (Y/N) |
+| WoodDeckSF | Numerical | Wood deck area in square feet |
+| OpenPorchSF | Numerical | Open porch area in square feet |
+| EnclosedPorch | Numerical | Enclosed porch area in square feet |
+| `3SsnPorch` | Numerical | Three-season porch area in square feet |
+| ScreenPorch | Numerical | Screen porch area in square feet |
+| PoolArea | Numerical | Pool area in square feet |
+| PoolQC | Ordinal | Pool quality |
+| Fence | Ordinal | Fence quality |
+| MiscFeature | Categorical | Miscellaneous feature (Shed, Tennis Court, etc.) |
+| MiscVal | Numerical | Value of miscellaneous feature |
+| MoSold | Numerical | Month sold |
+| YrSold | Numerical | Year sold |
+| SaleType | Categorical | Type of sale |
+| SaleCondition | Categorical | Sale condition |
+
+## Data Loading and Initial Inspection
+
+``` r
+ames_data <- read.csv("AmesHousing.csv")
+cat("Number of observations:", nrow(ames_data), "\n")
+cat("Number of features:", ncol(ames_data), "\n") 
 ```
-
-```{r, warning=FALSE, echo=F}
-# Load Data
-#kable(head(murders))
-
-ggplot1 = murders %>% ggplot(mapping = aes(x=population/10^6, y=total)) 
-
-  ggplot1 + geom_point(aes(col=region), size = 4) +
-  geom_text_repel(aes(label=abb)) +
-  scale_x_log10() +
-  scale_y_log10() +
-  geom_smooth(formula = "y~x", method=lm,se = F)+
-  xlab("Populations in millions (log10 scale)") + 
-  ylab("Total number of murders (log10 scale)") +
-  ggtitle("US Gun Murders in 2010") +
-  scale_color_discrete(name = "Region")+
-      theme_bw()
-  
-
-```
-
-## Modeling and Results
-
--   Explain your data preprocessing and cleaning steps.
-
--   Present your key findings in a clear and concise manner.
-
--   Use visuals to support your claims.
-
--   **Tell a story about what the data reveals.**
 
 ```{r}
+ames_data <- read.csv("AmesHousing.csv")
+cat("Number of observations:", nrow(ames_data), "\n")
+cat("Number of features:", ncol(ames_data), "\n") 
+```
+
+
+Null and missing values
+
+``` r
+missing_data <- colSums(is.na(ames_data))
+cat("Missing values per feature:\n")
+print(missing_data[missing_data > 0])
+```
+
+```{r}
+missing_data <- colSums(is.na(ames_data))
+cat("Missing values per feature:\n")
 
 ```
 
+
+```{r}
+print(missing_data[missing_data > 0])
+```
+:::
+
+## Data Cleaning 
+::: panel-tabset
+## Handling Missing values
+
+We are eliminating missing or null values in the dataset
+
+``` r
+# Categorical variables
+ames_data$Alley[is.na(ames_data$Alley)] <- "None"
+ames_data$Pool.QC[is.na(ames_data$Pool.QC)] <- "None"
+ames_data$Fence[is.na(ames_data$Fence)] <- "None"
+ames_data$Misc.Feature[is.na(ames_data$Misc.Feature)] <- "None"
+
+# Numerical variables (use median for continuous variables)
+ames_data$Mas.Vnr.Area[is.na(ames_data$Mas.Vnr.Area)] <- median(ames_data$Mas.Vnr.Area, na.rm = TRUE)
+# Impute missing Lot.Frontage with the median value
+ames_data$Lot.Frontage[is.na(ames_data$Lot.Frontage)] <- median(ames_data$Lot.Frontage, na.rm = TRUE)
+
+
+# basement-related values (assume 'None' for categorical and 0 for numerical)
+ames_data$Bsmt.Qual[is.na(ames_data$Bsmt.Qual)] <- "None"
+ames_data$Bsmt.Cond[is.na(ames_data$Bsmt.Cond)] <- "None"
+ames_data$Bsmt.Exposure[is.na(ames_data$Bsmt.Exposure)] <- "None"
+ames_data$BsmtFin.Type.1[is.na(ames_data$BsmtFin.Type.1)] <- "None"
+ames_data$BsmtFin.SF.1[is.na(ames_data$BsmtFin.SF.1)] <- 0
+ames_data$BsmtFin.Type.2[is.na(ames_data$BsmtFin.Type.2)] <- "None"
+ames_data$BsmtFin.SF.2[is.na(ames_data$BsmtFin.SF.2)] <- 0
+ames_data$Bsmt.Unf.SF[is.na(ames_data$Bsmt.Unf.SF)] <- 0
+ames_data$Total.Bsmt.SF[is.na(ames_data$Total.Bsmt.SF)] <- 0
+ames_data$Bsmt.Full.Bath[is.na(ames_data$Bsmt.Full.Bath)] <- 0
+ames_data$Bsmt.Half.Bath[is.na(ames_data$Bsmt.Half.Bath)] <- 0
+
+# Garage-related features (assume 'None' for categorical and 0 for numerical)
+ames_data$Garage.Type[is.na(ames_data$Garage.Type)] <- "None"
+ames_data$Garage.Yr.Blt[is.na(ames_data$Garage.Yr.Blt)] <- 0
+ames_data$Garage.Finish[is.na(ames_data$Garage.Finish)] <- "None"
+ames_data$Garage.Qual[is.na(ames_data$Garage.Qual)] <- "None"
+ames_data$Garage.Cond[is.na(ames_data$Garage.Cond)] <- "None"
+ames_data$Garage.Cars[is.na(ames_data$Garage.Cars)] <- 0
+ames_data$Garage.Area[is.na(ames_data$Garage.Area)] <- 0
+
+# Fireplaces
+ames_data$Fireplace.Qu[is.na(ames_data$Fireplace.Qu)] <- "None"
+
+```
+
+```{r}
+# Categorical variables
+ames_data$Alley[is.na(ames_data$Alley)] <- "None"
+ames_data$Pool.QC[is.na(ames_data$Pool.QC)] <- "None"
+ames_data$Fence[is.na(ames_data$Fence)] <- "None"
+ames_data$Misc.Feature[is.na(ames_data$Misc.Feature)] <- "None"
+
+# Numerical variables (use median for continuous variables)
+ames_data$Mas.Vnr.Area[is.na(ames_data$Mas.Vnr.Area)] <- median(ames_data$Mas.Vnr.Area, na.rm = TRUE)
+# Impute missing Lot.Frontage with the median value
+ames_data$Lot.Frontage[is.na(ames_data$Lot.Frontage)] <- median(ames_data$Lot.Frontage, na.rm = TRUE)
+
+
+# basement-related values (assume 'None' for categorical and 0 for numerical)
+ames_data$Bsmt.Qual[is.na(ames_data$Bsmt.Qual)] <- "None"
+ames_data$Bsmt.Cond[is.na(ames_data$Bsmt.Cond)] <- "None"
+ames_data$Bsmt.Exposure[is.na(ames_data$Bsmt.Exposure)] <- "None"
+ames_data$BsmtFin.Type.1[is.na(ames_data$BsmtFin.Type.1)] <- "None"
+ames_data$BsmtFin.SF.1[is.na(ames_data$BsmtFin.SF.1)] <- 0
+ames_data$BsmtFin.Type.2[is.na(ames_data$BsmtFin.Type.2)] <- "None"
+ames_data$BsmtFin.SF.2[is.na(ames_data$BsmtFin.SF.2)] <- 0
+ames_data$Bsmt.Unf.SF[is.na(ames_data$Bsmt.Unf.SF)] <- 0
+ames_data$Total.Bsmt.SF[is.na(ames_data$Total.Bsmt.SF)] <- 0
+ames_data$Bsmt.Full.Bath[is.na(ames_data$Bsmt.Full.Bath)] <- 0
+ames_data$Bsmt.Half.Bath[is.na(ames_data$Bsmt.Half.Bath)] <- 0
+
+# Garage-related features (assume 'None' for categorical and 0 for numerical)
+ames_data$Garage.Type[is.na(ames_data$Garage.Type)] <- "None"
+ames_data$Garage.Yr.Blt[is.na(ames_data$Garage.Yr.Blt)] <- 0
+ames_data$Garage.Finish[is.na(ames_data$Garage.Finish)] <- "None"
+ames_data$Garage.Qual[is.na(ames_data$Garage.Qual)] <- "None"
+ames_data$Garage.Cond[is.na(ames_data$Garage.Cond)] <- "None"
+ames_data$Garage.Cars[is.na(ames_data$Garage.Cars)] <- 0
+ames_data$Garage.Area[is.na(ames_data$Garage.Area)] <- 0
+
+# Fireplaces
+ames_data$Fireplace.Qu[is.na(ames_data$Fireplace.Qu)] <- "None"
+
+```
+
+
+## Null Values
+
+Check if there are any missing or null values in our data
+
+``` r
+missing_data_after <- colSums(is.na(ames_data))
+print(missing_data_after[missing_data_after > 0])
+```
+
+```{r}
+missing_data_after <- colSums(is.na(ames_data))
+print(missing_data_after[missing_data_after > 0])
+```
+::: 
+
+
+## Feature Selection
+
+The dataset has been streamlined to include 11 key features that are most relevant for predicting the sale price of a property. This refined selection incorporates both numerical values and binary categorical indicators, capturing crucial aspects such as living space, property age, garage capacity, and available amenities. The chosen features are:
+
+**SalePrice:** The target variable representing the final sale price of the property.
+
+**TotalBathrooms:** A combined count of all full and half bathrooms. 
+
+**TotalSquareFootage:** The total area of the home, combining both above-ground living space and basement space.
+
+**HouseAge:** The age of the house at the time it was sold.
+
+**TotalGarageSize:** A combined measure of garage square footage and car capacity.
+
+**TotalPorchArea:** The sum of all porch spaces, including open, enclosed, and screened porches.
+
+**HasPool:** A binary indicator showing whether the property includes a pool. 
+
+**HasFence:** A binary indicator for the presence of a fence.
+
+**HasFireplace:** A binary variable denoting whether the house has one or more fireplaces.
+
+**HasMiscFeature:** A binary indicator for the presence of additional features like sheds or tennis courts. 
+
+**OverallQualityScore:** A composite rating reflecting the overall quality and condition of the home.  
+
+These features were carefully chosen due to their strong influence on property value and were derived by combining or transforming relevant variables from the original dataset.
+
+## Creating New Features
+
+```r
+ames_data$TotalBathrooms <- ames_data$Full.Bath + (ames_data$Half.Bath * 0.5) + ames_data$Bsmt.Full.Bath + (ames_data$Bsmt.Half.Bath * 0.5)
+
+ames_data$TotalSquareFootage <- ames_data$Gr.Liv.Area + ames_data$BsmtFin.SF.1 + ames_data$BsmtFin.SF.2 + ames_data$X1st.Flr.SF + ames_data$X2nd.Flr.SF
+
+# Calculate House Age
+ames_data$HouseAge <- ames_data$Yr.Sold - ames_data$Year.Built
+# Calculate Garage Age (if Garage.Yr.Blt exists)
+ames_data$GarageAge <- ifelse(!is.na(ames_data$Garage.Yr.Blt), ames_data$Yr.Sold - ames_data$Garage.Yr.Blt, NA)
+# Calculate Remodel Age (if Year.Remod.Add exists)
+ames_data$RemodelAge <- ifelse(!is.na(ames_data$Year.Remod.Add), ames_data$Yr.Sold - ames_data$Year.Remod.Add, NA)
+# Combine all three into a new feature for total property age considering remodel/garage build
+ames_data$TotalPropertyAge <- pmin(ames_data$HouseAge, ames_data$GarageAge, ames_data$RemodelAge, na.rm = TRUE)
+
+
+ames_data$TotalGarageSize <- ames_data$Garage.Area + (ames_data$Garage.Cars * 200)
+
+ames_data$TotalPorchArea <- ames_data$Wood.Deck.SF + ames_data$Open.Porch.SF + ames_data$Enclosed.Porch + ames_data$X3Ssn.Porch + ames_data$Screen.Porch
+
+ames_data$HasPool <- ifelse(ames_data$Pool.Area > 0, 1, 0)
+ames_data$HasFence <- ifelse(!is.na(ames_data$Fence), 1, 0)
+ames_data$HasFireplace <- ifelse(ames_data$Fireplaces > 0, 1, 0)
+ames_data$HasMiscFeature <- ifelse(!is.na(ames_data$Misc.Feature), 1, 0)
+ames_data$OverallQualityScore <- ames_data$Overall.Qual * ames_data$Overall.Cond
+```
+
+```{r}
+ames_data$TotalBathrooms <- ames_data$Full.Bath + (ames_data$Half.Bath * 0.5) + ames_data$Bsmt.Full.Bath + (ames_data$Bsmt.Half.Bath * 0.5)
+
+ames_data$TotalSquareFootage <- ames_data$Gr.Liv.Area + ames_data$BsmtFin.SF.1 + ames_data$BsmtFin.SF.2 + ames_data$X1st.Flr.SF + ames_data$X2nd.Flr.SF
+
+# Calculate House Age
+ames_data$HouseAge <- ames_data$Yr.Sold - ames_data$Year.Built
+# Calculate Garage Age (if Garage.Yr.Blt exists)
+ames_data$GarageAge <- ifelse(!is.na(ames_data$Garage.Yr.Blt), ames_data$Yr.Sold - ames_data$Garage.Yr.Blt, NA)
+# Calculate Remodel Age (if Year.Remod.Add exists)
+ames_data$RemodelAge <- ifelse(!is.na(ames_data$Year.Remod.Add), ames_data$Yr.Sold - ames_data$Year.Remod.Add, NA)
+# Combine all three into a new feature for total property age considering remodel/garage build
+ames_data$TotalPropertyAge <- pmin(ames_data$HouseAge, ames_data$GarageAge, ames_data$RemodelAge, na.rm = TRUE)
+
+
+ames_data$TotalGarageSize <- ames_data$Garage.Area + (ames_data$Garage.Cars * 200)
+
+ames_data$TotalPorchArea <- ames_data$Wood.Deck.SF + ames_data$Open.Porch.SF + ames_data$Enclosed.Porch + ames_data$X3Ssn.Porch + ames_data$Screen.Porch
+
+ames_data$HasPool <- ifelse(ames_data$Pool.Area > 0, 1, 0)
+ames_data$HasFence <- ifelse(!is.na(ames_data$Fence), 1, 0)
+ames_data$HasFireplace <- ifelse(ames_data$Fireplaces > 0, 1, 0)
+ames_data$HasMiscFeature <- ifelse(!is.na(ames_data$Misc.Feature), 1, 0)
+ames_data$OverallQualityScore <- ames_data$Overall.Qual * ames_data$Overall.Cond
+
+# Check the first few rows of the new dataset
+```
+
+
+**Check the first few rows of the new dataset ** 
+
+Select the required columns for the new dataset
+
+```r
+head(Selected_Ames_Data)
+```
+
+```{r}
+Selected_Ames_Data <- ames_data[c("SalePrice", "TotalBathrooms", "TotalSquareFootage", "HouseAge", "TotalGarageSize", "TotalPorchArea", "HasPool", "HasFence", "HasFireplace", "HasMiscFeature", "OverallQualityScore")]  
+head(Selected_Ames_Data)
+```
+
+
+------------------------------------------------------------------------
+
+# Model Training, Evaluation, and Feature Importance
+
+## Data Preprocessing 
+::: panel-tabset
+## Data Splitting  {.hscroll .scrollable}
+
+Split the dataset into 80% training and 20% testing.
+
+Ensures model evaluation is unbiased.
+```r
+set.seed(123)
+trainIndex <- createDataPartition(Selected_Ames_Data$SalePrice, p = 0.8, list = FALSE)
+train <- Selected_Ames_Data[trainIndex, ]
+test <- Selected_Ames_Data[-trainIndex, ]
+cat("Data split complete:\n")
+cat("Training set size:", nrow(train), "\n")
+cat("Test set size:", nrow(test), "\n")
+```
+
+```{r}
+library(caret)
+set.seed(123)
+trainIndex <- createDataPartition(Selected_Ames_Data$SalePrice, p = 0.8, list = FALSE)
+train <- Selected_Ames_Data[trainIndex, ]
+test <- Selected_Ames_Data[-trainIndex, ]
+cat("Data split complete:\n")
+cat("Training set size:", nrow(train), "\n")
+cat("Test set size:", nrow(test), "\n")
+```
+
+## Feature Scaling
+Standardize numerical features so that all variables are on the same scale. (mean = 0, sd = 1).
+
+Important for regularization techniques like LASSO.
+```r
+# Standardize numerical features
+preProc <- preProcess(train[, -1], method = c("center", "scale"))
+train_scaled <- predict(preProc, train)
+test_scaled <- predict(preProc, test)
+cat("Scaling and centering complete.\n")
+```
+
+```{r}
+# Standardize numerical features
+preProc <- preProcess(train[, -1], method = c("center", "scale"))
+train_scaled <- predict(preProc, train)
+test_scaled <- predict(preProc, test)
+cat("scaling and centering complete.\n")
+```
+
+:::
+
+## LASSO Model Traning and Evaluation 
+::: panel-tabset
+## Model Training  {.hscroll .scrollable}
+Convert data to matrices for modeling.
+
+Train LASSO model with cross-validation to find best lambda.
+
+Fit final model using selected lambda.
+
+```r
+x_train <- model.matrix(SalePrice ~ ., train_scaled)[, -1]
+y_train <- train_scaled$SalePrice
+x_test <- model.matrix(SalePrice ~ ., test_scaled)[, -1]
+y_test <- test_scaled$SalePrice
+
+cv_lasso <- cv.glmnet(x_train, y_train, alpha = 1)
+best_lambda <- cv_lasso$lambda.min
+
+lasso_model <- glmnet(x_train, y_train, alpha = 1, lambda = best_lambda)
+```
+
+```{r}
+library(glmnet)
+x_train <- model.matrix(SalePrice ~ ., train_scaled)[, -1]
+y_train <- train_scaled$SalePrice
+x_test <- model.matrix(SalePrice ~ ., test_scaled)[, -1]
+y_test <- test_scaled$SalePrice
+
+cv_lasso <- cv.glmnet(x_train, y_train, alpha = 1)
+best_lambda <- cv_lasso$lambda.min
+
+lasso_model <- glmnet(x_train, y_train, alpha = 1, lambda = best_lambda)
+```
+## Model Evaluation 
+::: panel-tabset
+# Manual Evaluation
+```r
+# Predict on test data
+y_pred <- predict(lasso_model, s = best_lambda, newx = x_test)
+
+# Compute MSE and R-squared
+mse <- mean((y_test - y_pred)^2)
+r_squared <- 1 - sum((y_test - y_pred)^2) / sum((y_test - mean(y_test))^2)
+
+cat("MSE:", mse, "\nR-squared:", r_squared)
+
+```
+
+```{r}
+# Predict on test data
+y_pred <- predict(lasso_model, s = best_lambda, newx = x_test)
+
+# Compute MSE and R-squared
+mse <- mean((y_test - y_pred)^2)
+r_squared <- 1 - sum((y_test - y_pred)^2) / sum((y_test - mean(y_test))^2)
+
+cat("MSE:", mse, "\nR-squared:", r_squared)
+```
+# Top Features 
+```r
+# Extract feature importance
+lasso_coeffs <- coef(lasso_model, s = best_lambda)
+feature_importance <- data.frame(Feature = rownames(lasso_coeffs), Coefficient = as.vector(lasso_coeffs))
+feature_importance <- feature_importance[order(abs(feature_importance$Coefficient), decreasing = TRUE), ]
+
+# Display top 5 important features
+head(feature_importance, 5)
+```
+```{r}
+# Extract feature importance
+lasso_coeffs <- coef(lasso_model, s = best_lambda)
+feature_importance <- data.frame(Feature = rownames(lasso_coeffs), Coefficient = as.vector(lasso_coeffs))
+feature_importance <- feature_importance[order(abs(feature_importance$Coefficient), decreasing = TRUE), ]
+
+# Display top 5 important features
+head(feature_importance, 5)
+
+```
+
+# Cross validation with top features
+```r
+# Perform 5-fold cross-validation to evaluate the model
+cv_lasso <- cv.glmnet(x_train, y_train, alpha = 1, nfolds = 5)
+
+# Best lambda value
+best_lambda_cv <- cv_lasso$lambda.min
+cat("Best Lambda from Cross-Validation: ", best_lambda_cv, "\n")
+
+# Predict on test data using the best lambda
+lasso_cv_model <- glmnet(x_train, y_train, alpha = 1, lambda = best_lambda_cv)
+y_pred_cv <- predict(lasso_cv_model, s = best_lambda_cv, newx = x_test)
+
+# Calculate MSE and R-squared for cross-validation
+mse_cv <- mean((y_test - y_pred_cv)^2)
+r_squared_cv <- 1 - sum((y_test - y_pred_cv)^2) / sum((y_test - mean(y_test))^2)
+
+cat("MSE from Cross-Validation: ", mse_cv, "\n")
+cat("R-squared from Cross-Validation: ", r_squared_cv, "\n")
+
+```
+
+```{r}
+# Perform 5-fold cross-validation to evaluate the model
+cv_lasso <- cv.glmnet(x_train, y_train, alpha = 1, nfolds = 5)
+
+# Best lambda value
+best_lambda_cv <- cv_lasso$lambda.min
+cat("Best Lambda from Cross-Validation: ", best_lambda_cv, "\n")
+
+# Predict on test data using the best lambda
+lasso_cv_model <- glmnet(x_train, y_train, alpha = 1, lambda = best_lambda_cv)
+y_pred_cv <- predict(lasso_cv_model, s = best_lambda_cv, newx = x_test)
+
+# Calculate MSE and R-squared for cross-validation
+mse_cv <- mean((y_test - y_pred_cv)^2)
+r_squared_cv <- 1 - sum((y_test - y_pred_cv)^2) / sum((y_test - mean(y_test))^2)
+
+cat("MSE from Cross-Validation: ", mse_cv, "\n")
+cat("R-squared from Cross-Validation: ", r_squared_cv, "\n")
+
+```
+:::
+:::
+
+------------------------------------------------------------------------
+
+# Results and Conclusion
+
+## Results
+::: panel-tabset
+# Residuals Distribution {.hscroll .scrollable}
+The histogram shows the distribution of residuals (prediction errors) after cleaning, with no non-finite values. Residuals are centered around zero, indicating a good fit of the model to the data, with no significant bias.
+```r
+# Calculate residuals and clean up any non-finite values
+residuals_cv_clean <- na.omit(y_test - y_pred_cv)
+
+# Plot histogram of cleaned residuals without scientific notation
+ggplot(data.frame(residuals_cv_clean), aes(x = residuals_cv_clean)) +
+  geom_histogram(binwidth = 50000, fill = "lightblue", color = "black") +
+  scale_x_continuous(labels = scales::label_number()) +  # Remove scientific notation on x-axis
+  labs(title = "Residuals Distribution (Cleaned)", x = "Residuals", y = "Frequency") +
+  theme_minimal()
+
+```
+```{r}
+# Calculate residuals and clean up any non-finite values
+residuals_cv_clean <- na.omit(y_test - y_pred_cv)
+
+# Plot histogram of cleaned residuals without scientific notation
+ggplot(data.frame(residuals_cv_clean), aes(x = residuals_cv_clean)) +
+  geom_histogram(binwidth = 50000, fill = "lightblue", color = "black") +
+  scale_x_continuous(labels = scales::label_number()) +  # Remove scientific notation on x-axis
+  labs(title = "Residuals Distribution (Cleaned)", x = "Residuals", y = "Frequency") +
+  theme_minimal()
+
+```
+# Cross-Validation Curve
+The cross-validation curve shows the relationship between the cross-validation error and lambda (regularization parameter). The optimal value of lambda is chosen at the minimum error (lambda.min), balancing model performance and complexity.
+```r
+# Plot cross-validation curve
+plot(cv_lasso)
+title("Cross-validation Error vs Log(Lambda)", line = 2.5)
+
+```
+```{r}
+# Plot cross-validation curve
+plot(cv_lasso)
+title("Cross-validation Error vs Log(Lambda)", line = 2.5)
+
+```
+
+# Coefficient Path
+The coefficient path plot illustrates how feature coefficients change as lambda increases. As regularization strengthens, less important features' coefficients shrink to zero, indicating which variables are most influential in predicting house prices.
+```r
+lasso_full <- glmnet(x_train, y_train, alpha = 1)
+
+# Plot coefficient paths
+plot(lasso_full, xvar = "lambda", label = TRUE)
+title("LASSO Coefficient Path")
+
+```
+```{r}
+lasso_full <- glmnet(x_train, y_train, alpha = 1)
+
+# Plot coefficient paths
+plot(lasso_full, xvar = "lambda", label = TRUE)
+title("LASSO Coefficient Path")
+
+```
+
+# Non-Zero Coefficients
+The bar plot shows the non-zero coefficients retained by the LASSO model after regularization. These are the most influential features in predicting house prices, with higher coefficients indicating greater importance.
+```r
+# Get non-zero coefficients
+coef_lasso <- coef(lasso_model)
+non_zero_coef <- coef_lasso[coef_lasso[, 1] != 0, , drop = FALSE]
+# Create a tidy dataframe from non-zero coefficients
+non_zero_df <- as.data.frame(as.matrix(non_zero_coef))
+non_zero_df$Feature <- rownames(non_zero_df)
+colnames(non_zero_df)[1] <- "Coefficient"
+non_zero_df <- non_zero_df[non_zero_df$Feature != "(Intercept)", ]  # Remove intercept if present
+print(non_zero_coef)
+# Plot
+ggplot(non_zero_df, aes(x = reorder(Feature, Coefficient), y = Coefficient)) +
+  geom_col(fill = "steelblue") +
+  coord_flip() +
+  labs(title = "Selected Features by LASSO", x = "Feature", y = "Coefficient") +
+  theme_minimal()
+``` 
+```{r}
+coef_lasso <- coef(lasso_model)
+non_zero_coef <- coef_lasso[coef_lasso[, 1] != 0, , drop = FALSE]
+# Create a tidy dataframe from non-zero coefficients
+non_zero_df <- as.data.frame(as.matrix(non_zero_coef))
+non_zero_df$Feature <- rownames(non_zero_df)
+colnames(non_zero_df)[1] <- "Coefficient"
+non_zero_df <- non_zero_df[non_zero_df$Feature != "(Intercept)", ]  # Remove intercept if present
+
+# Plot
+ggplot(non_zero_df, aes(x = reorder(Feature, Coefficient), y = Coefficient)) +
+  geom_col(fill = "steelblue") +
+  coord_flip() +
+  labs(title = "Selected Features by LASSO", x = "Feature", y = "Coefficient") +
+  theme_minimal()
+``` 
+
+:::
 ## Conclusion
 
--   Summarize your key findings.
+Efficient Feature Selection:
+Lasso helped identify the most influential predictors of house prices by shrinking less important coefficients to zero.
 
--   Discuss the implications of your results.
+Improved Model Simplicity & Interpretability:
+The final model is not only more accurate but also easier to understand, which is valuable for both analysts and stakeholders.
+
+Reduced Overfitting:
+By penalizing model complexity, Lasso enhances generalizability to new, unseen data.
+
+Key Takeaways:
+
+TotalSquareFootage, OverallQualityScore, and GarageSize emerged as strong predictors.
+
+Binary indicators like HasPool or HasFireplace added meaningful context.
+
+Lasso is ideal when dealing with many features and potential multicollinearity.
+
+Future Work:
+
+Compare with Ridge and Elastic Net for performance.
+
+Apply cross-validation for more robust tuning.
+
+Explore interactions and nonlinear relationships.
+
+
+
+------------------------------------------------------------------------
 
 ## References
+
+-   **Pavani Matharipavani**. [IDC6940 Lasso
+    Project](https://matharipavani.github.io/IDC6940_Lasso/)
+-   **Additional Resources**:
+    -   [Pathwise Coordinate
+        Optimization](https://arxiv.org/abs/0708.1485)
+    -   [Strong Rules for Discarding
+        Predictors](https://arxiv.org/abs/1011.2234)
+    -   [Degrees of Freedom in Lasso
+        Problems](https://arxiv.org/abs/1111.0653)
+    -   [The Lasso Problem and
+        Uniqueness](https://arxiv.org/abs/1206.0313)

@@ -19,8 +19,7 @@ editor:
     wrap: 72
 ---
 
-Slides: [slides.html](slides.html){target="_blank"} ( Go to `slides.qmd`
-to edit)
+Slides: [Slides link](slides.html){target="_blank"} 
 
 <!--::: callout-important
 **Remember:** Your goal is to make your audience understand and care
@@ -81,34 +80,34 @@ Lasso regression modifies the standard linear regression objective function by a
 $$
 Minimize:\sum_{i=1}^n (y_i - \hat{y}^i)^2 + \lambda \sum_{j=1}^p |\beta_j|
 $$
-Where,<br>
-$y_i$  - is the actual value (sale price). <br>
-$\hat{y}_i$ -  is the predicted value.<br>
-$\beta_j$ -  represents the coefficients of the model.<br>
-$n$  - is the number of observations.<br>
-$p$ -  is the number of features (predictors).<br>
-$\lambda$  - is the regularization parameter that controls the strength of the penalty.<br>
+Where: <br>
+$y_i$  = is the actual value (sale price). <br>
+$\hat{y}_i$ =  is the predicted value.<br>
+$\beta_j$ =  represents the coefficients of the model.<br>
+$n$  = is the number of observations.<br>
+$p$ =  is the number of features (predictors).<br>
+$\lambda$  = is the regularization parameter that controls the strength of the penalty.<br>
 
 #### Formula Explanation
 In traditional linear regression:
 $$  y_i = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \cdots + \beta_p x_p + \epsilon_i $$
-Where,<br> 
-$y_i$ - is the target variable (sale price).<br>
-$x_1, x_2, \ldots, x_p$ - are the predictor variables (features such as square footage, number of bathrooms, etc.).<br>
-$\beta_0, \beta_1, \ldots, \beta_p$ - are the coefficients (parameters) of the model.<br>
-$\epsilon_i$ - represents the error term.<br>
+Where: <br> 
+$y_i$ = is the target variable (sale price).<br>
+$x_1, x_2, \ldots, x_p$ = are the predictor variables (features such as square footage, number of bathrooms, etc.).<br>
+$\beta_0, \beta_1, \ldots, \beta_p$ = are the coefficients (parameters) of the model.<br>
+$\epsilon_i$ = represents the error term.<br>
 
 
 
 ### Key Characteristics of Lasso Regression
 
-**1. Feature Selection: ** Lasso performs both regularization and feature selection, which is advantageous when there are many features, and some may be irrelevant to predicting the target variable. <br>
-**2. Sparse Solution:** The L1 penalty used in Lasso forces many coefficients to become exactly zero, resulting in a sparse model where only the most relevant features remain. <br>
-**3. Regularization:** Lasso prevents overfitting by shrinking the coefficients, which is particularly useful when dealing with high-dimensional data.
+**1. Automatic Feature Selection: ** Lasso performs both regularization and feature selection, which is advantageous when there are many features, and some may be irrelevant to predicting the target variable. <br>
+**2. Sparsity:** The L1 penalty used in Lasso forces many coefficients to become exactly zero, resulting in a sparse model where only the most relevant features remain. <br>
+**3. Regularization Effect:** Lasso prevents overfitting by shrinking the coefficients, which is particularly useful when dealing with high-dimensional data.
 
 ### Impact of Lambda on Coefficients
 
-The regularization parameter $\lambda$ controls the strength of the penalty. As $\lambda$ increases, the model becomes more regularized, and more coefficients are shrunk to zero. Conversely, when $\lambda$ is small or zero, Lasso behaves like ordinary least squares regression, where no regularization occurs.
+The regularization parameter $\lambda$ determines how aggressively the model penalizes coefficients. Higher values of $\lambda$ increase the penalty, pushing more coefficients to zero, resulting in a simpler model. Conversely, when $\lambda$ is small or zero, Lasso behaves like ordinary least squares regression, where no regularization occurs.
 
 ### Graphical Interpretation:
 
@@ -136,7 +135,7 @@ As Lasso regression penalizes less important features, the coefficients for irre
 **Prevents Overfitting:** With the regularization term, Lasso reduces the risk of overfitting, especially when there is a large number of features relative to the number of observations. It ensures that the model remains generalizable.<br>
 
 
-## Analysis and Results
+## Analysis
 
 ### Data Exploration and Visualization
   
@@ -222,7 +221,7 @@ print(missing_data_after[missing_data_after > 0])
 
 
 ###### Key Features:
-The dataset has been refined to focus on a subset of 11 key features, which are selected based on their relevance to predicting the SalePrice of properties. These features include a combination of both numerical and binary categorical data, representing essential characteristics of the properties, such as total living space, house age, garage size, and amenities. The selected features are:
+The dataset has been refined to focus on a subset of 11 key features, which are selected based on their relevance to predicting the SalePrice of properties. These features include a combination of both numerical and binary categorical data, representing essential characteristics of the properties, such as total living space, house age, garage size, and amenities. The selected features are
 
 - **SalePrice**: This is the target variable, representing the sale price of the house.
 - **TotalBathrooms:** A combined measure of the total number of bathrooms (full + half).
@@ -308,6 +307,7 @@ lasso_model <- glmnet(x_train, y_train, alpha = 1, lambda = best_lambda)
 
 ```
 
+
 **# Model Evaluation**
 ```{r, warning=FALSE, echo=TRUE}
 # Predict on test data
@@ -321,21 +321,22 @@ cat("MSE:", mse, "\nR-squared:", r_squared)
 
 ```
 
+**# Top Features (Model Interpretation) **
 ```{r, warning=FALSE, echo=TRUE}
 # Extract feature importance
 lasso_coeffs <- coef(lasso_model, s = best_lambda)
 feature_importance <- data.frame(Feature = rownames(lasso_coeffs), Coefficient = as.vector(lasso_coeffs))
 feature_importance <- feature_importance[order(abs(feature_importance$Coefficient), decreasing = TRUE), ]
 
-# Display top 10 important features
-head(feature_importance, 11)
+# Display top 5 important features
+head(feature_importance, 5)
 
 ```
 
 **# Cross validation **
 ```{r, warning=FALSE, echo=TRUE}
-# Perform 10-fold cross-validation to evaluate the model
-cv_lasso <- cv.glmnet(x_train, y_train, alpha = 1, nfolds = 11)
+# Perform 5-fold cross-validation to evaluate the model
+cv_lasso <- cv.glmnet(x_train, y_train, alpha = 1, nfolds = 5)
 
 # Best lambda value
 best_lambda_cv <- cv_lasso$lambda.min
@@ -449,7 +450,41 @@ ggplot(data.frame(residuals_cv_clean), aes(x = residuals_cv_clean)) +
   theme_minimal()
 
 ```
+**# Cross-Validation Curve **
+```{r}
+# Plot cross-validation curve
+plot(cv_lasso)
+title("Cross-validation Error vs Log(Lambda)", line = 2.5)
 
+```
+
+**# Coefficient Path**
+```{r}
+lasso_full <- glmnet(x_train, y_train, alpha = 1)
+
+# Plot coefficient paths
+plot(lasso_full, xvar = "lambda", label = TRUE)
+title("LASSO Coefficient Path")
+
+```
+
+**# Output Non-Zero Coefficients**
+```{r}
+coef_lasso <- coef(lasso_model)
+non_zero_coef <- coef_lasso[coef_lasso[, 1] != 0, , drop = FALSE]
+# Create a tidy dataframe from non-zero coefficients
+non_zero_df <- as.data.frame(as.matrix(non_zero_coef))
+non_zero_df$Feature <- rownames(non_zero_df)
+colnames(non_zero_df)[1] <- "Coefficient"
+non_zero_df <- non_zero_df[non_zero_df$Feature != "(Intercept)", ]  # Remove intercept if present
+print(non_zero_coef)
+# Plot
+ggplot(non_zero_df, aes(x = reorder(Feature, Coefficient), y = Coefficient)) +
+  geom_col(fill = "steelblue") +
+  coord_flip() +
+  labs(title = "Selected Features by LASSO", x = "Feature", y = "Coefficient") +
+  theme_minimal()
+```
 
 ## Modeling and Results
 

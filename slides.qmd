@@ -113,8 +113,7 @@ editor:
         resulting in a simpler model.
     -   This plot demonstrates how coefficients are penalized as λ
         increases, leading to the elimination of less important
-        features. ![](path/to/your/lasso_path_plot)
-        <!-- Image placeholder for Lasso Path plot -->
+        features. This plot is presented on the results session
 
 ### Cross-Validation for Lambda Selection
 
@@ -124,8 +123,7 @@ editor:
         point where the error is minimized.
     -   This plot helps balance model complexity and generalization by
         selecting the λ that yields the lowest error.
-        ![](path/to/your/cross_validation_plot)
-        <!-- Image placeholder for Cross-Validation plot -->
+    -   We ploted a Cross-Validation plot which is presented in Results slide 
 
 ## Algorithm Used for Lasso Regression
 

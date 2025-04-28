@@ -42,6 +42,9 @@ editor:
     absolute value of the coefficients.
 -   This penalty encourages simpler models, with many coefficients being
     shrunk to zero.
+$$
+Minimize:\sum_{i=1}^n (y_i - \hat{y}^i)^2 + \lambda \sum_{j=1}^p |\beta_j|
+$$
 
 ------------------------------------------------------------------------
 
@@ -123,7 +126,8 @@ editor:
         point where the error is minimized.
     -   This plot helps balance model complexity and generalization by
         selecting the λ that yields the lowest error.
-    -   We ploted a Cross-Validation plot which is presented in Results slide 
+    -   We ploted a Cross-Validation plot which is presented in Results
+        slide
 
 ## Algorithm Used for Lasso Regression
 
@@ -161,86 +165,86 @@ tasks.
 [[*Link to AMES Housing data
 documentation*]{.underline}](https://www.kaggle.com/datasets/prevek18/ames-housing-dataset){style="color: blue;"}
 
-| Variable | Variable Type | Description |
-|--------------|--------------|---------------------------------------------|
-| SalePrice | Numerical | Sale price of the house (target variable) in USD |
-| MSSubClass | Categorical | Identifies the type of dwelling |
-| MSZoning | Categorical | General zoning classification |
-| LotFrontage | Numerical | Linear feet of street connected to property |
-| LotArea | Numerical | Lot size in square feet |
-| Street | Categorical | Type of road access |
-| Alley | Categorical | Type of alley access |
-| LotShape | Ordinal | General shape of property |
-| LandContour | Categorical | Flatness of the property |
-| Utilities | Categorical | Type of utilities available |
-| LotConfig | Categorical | Lot configuration |
-| LandSlope | Ordinal | Slope of property |
-| Neighborhood | Categorical | Physical locations within Ames |
-| Condition1 | Categorical | Proximity to main roads/railroads |
-| Condition2 | Categorical | Additional proximity to main roads/railroads |
-| BldgType | Categorical | Type of dwelling |
-| HouseStyle | Categorical | Style of dwelling |
-| OverallQual | Ordinal | Overall material and finish quality |
-| OverallCond | Ordinal | Overall condition rating |
-| YearBuilt | Numerical | Original construction year |
-| YearRemodAdd | Numerical | Remodel year (same as construction year if no remodel) |
-| RoofStyle | Categorical | Type of roof |
-| RoofMatl | Categorical | Roof material |
-| Exterior1st | Categorical | Primary exterior material |
-| Exterior2nd | Categorical | Secondary exterior material |
-| MasVnrType | Categorical | Masonry veneer type |
-| MasVnrArea | Numerical | Masonry veneer area in square feet |
-| Foundation | Categorical | Type of foundation |
-| BsmtQual | Ordinal | Height of basement |
-| BsmtCond | Ordinal | General basement condition |
-| BsmtExposure | Ordinal | Walkout or garden-level basement walls |
-| BsmtFinType1 | Ordinal | Quality of finished basement area |
-| BsmtFinSF1 | Numerical | Type 1 finished square feet |
-| BsmtFinType2 | Ordinal | Quality of second finished basement area |
-| BsmtFinSF2 | Numerical | Type 2 finished square feet |
-| BsmtUnfSF | Numerical | Unfinished basement square feet |
-| TotalBsmtSF | Numerical | Total basement square feet |
-| Heating | Categorical | Type of heating |
-| HeatingQC | Ordinal | Heating quality and condition |
-| CentralAir | Categorical | Central air conditioning (Y/N) |
-| Electrical | Categorical | Electrical system type |
-| `1stFlrSF` | Numerical | First floor square footage |
-| `2ndFlrSF` | Numerical | Second floor square footage |
-| LowQualFinSF | Numerical | Low-quality finished square feet |
-| GrLivArea | Numerical | Above ground living area square feet |
-| BsmtFullBath | Numerical | Number of full bathrooms in basement |
-| BsmtHalfBath | Numerical | Number of half bathrooms in basement |
-| FullBath | Numerical | Number of full bathrooms above grade |
-| HalfBath | Numerical | Number of half bathrooms above grade |
-| BedroomAbvGr | Numerical | Number of bedrooms above basement level |
-| KitchenAbvGr | Numerical | Number of kitchens |
-| KitchenQual | Ordinal | Kitchen quality |
-| TotRmsAbvGrd | Numerical | Total number of rooms above ground (excluding bathrooms) |
-| Functional | Ordinal | Home functionality rating |
-| Fireplaces | Numerical | Number of fireplaces |
-| FireplaceQu | Ordinal | Fireplace quality |
-| GarageType | Categorical | Location of garage |
-| GarageYrBlt | Numerical | Year garage was built |
-| GarageFinish | Ordinal | Interior finish of garage |
-| GarageCars | Numerical | Size of garage in car capacity |
-| GarageArea | Numerical | Size of garage in square feet |
-| GarageQual | Ordinal | Garage quality |
-| GarageCond | Ordinal | Garage condition |
-| PavedDrive | Ordinal | Paved driveway (Y/N) |
-| WoodDeckSF | Numerical | Wood deck area in square feet |
-| OpenPorchSF | Numerical | Open porch area in square feet |
-| EnclosedPorch | Numerical | Enclosed porch area in square feet |
-| `3SsnPorch` | Numerical | Three-season porch area in square feet |
-| ScreenPorch | Numerical | Screen porch area in square feet |
-| PoolArea | Numerical | Pool area in square feet |
-| PoolQC | Ordinal | Pool quality |
-| Fence | Ordinal | Fence quality |
-| MiscFeature | Categorical | Miscellaneous feature (Shed, Tennis Court, etc.) |
-| MiscVal | Numerical | Value of miscellaneous feature |
-| MoSold | Numerical | Month sold |
-| YrSold | Numerical | Year sold |
-| SaleType | Categorical | Type of sale |
-| SaleCondition | Categorical | Sale condition |
+| Variable      | Variable Type | Description                                              |
+|----------------|----------------|-----------------------------------------|
+| SalePrice     | Numerical     | Sale price of the house (target variable) in USD         |
+| MSSubClass    | Categorical   | Identifies the type of dwelling                          |
+| MSZoning      | Categorical   | General zoning classification                            |
+| LotFrontage   | Numerical     | Linear feet of street connected to property              |
+| LotArea       | Numerical     | Lot size in square feet                                  |
+| Street        | Categorical   | Type of road access                                      |
+| Alley         | Categorical   | Type of alley access                                     |
+| LotShape      | Ordinal       | General shape of property                                |
+| LandContour   | Categorical   | Flatness of the property                                 |
+| Utilities     | Categorical   | Type of utilities available                              |
+| LotConfig     | Categorical   | Lot configuration                                        |
+| LandSlope     | Ordinal       | Slope of property                                        |
+| Neighborhood  | Categorical   | Physical locations within Ames                           |
+| Condition1    | Categorical   | Proximity to main roads/railroads                        |
+| Condition2    | Categorical   | Additional proximity to main roads/railroads             |
+| BldgType      | Categorical   | Type of dwelling                                         |
+| HouseStyle    | Categorical   | Style of dwelling                                        |
+| OverallQual   | Ordinal       | Overall material and finish quality                      |
+| OverallCond   | Ordinal       | Overall condition rating                                 |
+| YearBuilt     | Numerical     | Original construction year                               |
+| YearRemodAdd  | Numerical     | Remodel year (same as construction year if no remodel)   |
+| RoofStyle     | Categorical   | Type of roof                                             |
+| RoofMatl      | Categorical   | Roof material                                            |
+| Exterior1st   | Categorical   | Primary exterior material                                |
+| Exterior2nd   | Categorical   | Secondary exterior material                              |
+| MasVnrType    | Categorical   | Masonry veneer type                                      |
+| MasVnrArea    | Numerical     | Masonry veneer area in square feet                       |
+| Foundation    | Categorical   | Type of foundation                                       |
+| BsmtQual      | Ordinal       | Height of basement                                       |
+| BsmtCond      | Ordinal       | General basement condition                               |
+| BsmtExposure  | Ordinal       | Walkout or garden-level basement walls                   |
+| BsmtFinType1  | Ordinal       | Quality of finished basement area                        |
+| BsmtFinSF1    | Numerical     | Type 1 finished square feet                              |
+| BsmtFinType2  | Ordinal       | Quality of second finished basement area                 |
+| BsmtFinSF2    | Numerical     | Type 2 finished square feet                              |
+| BsmtUnfSF     | Numerical     | Unfinished basement square feet                          |
+| TotalBsmtSF   | Numerical     | Total basement square feet                               |
+| Heating       | Categorical   | Type of heating                                          |
+| HeatingQC     | Ordinal       | Heating quality and condition                            |
+| CentralAir    | Categorical   | Central air conditioning (Y/N)                           |
+| Electrical    | Categorical   | Electrical system type                                   |
+| `1stFlrSF`    | Numerical     | First floor square footage                               |
+| `2ndFlrSF`    | Numerical     | Second floor square footage                              |
+| LowQualFinSF  | Numerical     | Low-quality finished square feet                         |
+| GrLivArea     | Numerical     | Above ground living area square feet                     |
+| BsmtFullBath  | Numerical     | Number of full bathrooms in basement                     |
+| BsmtHalfBath  | Numerical     | Number of half bathrooms in basement                     |
+| FullBath      | Numerical     | Number of full bathrooms above grade                     |
+| HalfBath      | Numerical     | Number of half bathrooms above grade                     |
+| BedroomAbvGr  | Numerical     | Number of bedrooms above basement level                  |
+| KitchenAbvGr  | Numerical     | Number of kitchens                                       |
+| KitchenQual   | Ordinal       | Kitchen quality                                          |
+| TotRmsAbvGrd  | Numerical     | Total number of rooms above ground (excluding bathrooms) |
+| Functional    | Ordinal       | Home functionality rating                                |
+| Fireplaces    | Numerical     | Number of fireplaces                                     |
+| FireplaceQu   | Ordinal       | Fireplace quality                                        |
+| GarageType    | Categorical   | Location of garage                                       |
+| GarageYrBlt   | Numerical     | Year garage was built                                    |
+| GarageFinish  | Ordinal       | Interior finish of garage                                |
+| GarageCars    | Numerical     | Size of garage in car capacity                           |
+| GarageArea    | Numerical     | Size of garage in square feet                            |
+| GarageQual    | Ordinal       | Garage quality                                           |
+| GarageCond    | Ordinal       | Garage condition                                         |
+| PavedDrive    | Ordinal       | Paved driveway (Y/N)                                     |
+| WoodDeckSF    | Numerical     | Wood deck area in square feet                            |
+| OpenPorchSF   | Numerical     | Open porch area in square feet                           |
+| EnclosedPorch | Numerical     | Enclosed porch area in square feet                       |
+| `3SsnPorch`   | Numerical     | Three-season porch area in square feet                   |
+| ScreenPorch   | Numerical     | Screen porch area in square feet                         |
+| PoolArea      | Numerical     | Pool area in square feet                                 |
+| PoolQC        | Ordinal       | Pool quality                                             |
+| Fence         | Ordinal       | Fence quality                                            |
+| MiscFeature   | Categorical   | Miscellaneous feature (Shed, Tennis Court, etc.)         |
+| MiscVal       | Numerical     | Value of miscellaneous feature                           |
+| MoSold        | Numerical     | Month sold                                               |
+| YrSold        | Numerical     | Year sold                                                |
+| SaleType      | Categorical   | Type of sale                                             |
+| SaleCondition | Categorical   | Sale condition                                           |
 
 ## Data Loading and Initial Inspection
 
@@ -256,7 +260,6 @@ cat("Number of observations:", nrow(ames_data), "\n")
 cat("Number of features:", ncol(ames_data), "\n") 
 ```
 
-
 Null and missing values
 
 ``` r
@@ -271,13 +274,13 @@ cat("Missing values per feature:\n")
 
 ```
 
-
 ```{r}
 print(missing_data[missing_data > 0])
 ```
 :::
 
-## Data Cleaning 
+## Data Cleaning
+
 ::: panel-tabset
 ## Handling Missing values
 
@@ -320,7 +323,6 @@ ames_data$Garage.Area[is.na(ames_data$Garage.Area)] <- 0
 
 # Fireplaces
 ames_data$Fireplace.Qu[is.na(ames_data$Fireplace.Qu)] <- "None"
-
 ```
 
 ```{r}
@@ -363,7 +365,6 @@ ames_data$Fireplace.Qu[is.na(ames_data$Fireplace.Qu)] <- "None"
 
 ```
 
-
 ## Null Values
 
 Check if there are any missing or null values in our data
@@ -377,40 +378,53 @@ print(missing_data_after[missing_data_after > 0])
 missing_data_after <- colSums(is.na(ames_data))
 print(missing_data_after[missing_data_after > 0])
 ```
-::: 
-
+:::
 
 ## Feature Selection
 
-The dataset has been streamlined to include 11 key features that are most relevant for predicting the sale price of a property. This refined selection incorporates both numerical values and binary categorical indicators, capturing crucial aspects such as living space, property age, garage capacity, and available amenities. The chosen features are:
+The dataset has been streamlined to include 11 key features that are
+most relevant for predicting the sale price of a property. This refined
+selection incorporates both numerical values and binary categorical
+indicators, capturing crucial aspects such as living space, property
+age, garage capacity, and available amenities. The chosen features are:
 
-**SalePrice:** The target variable representing the final sale price of the property.
+**SalePrice:** The target variable representing the final sale price of
+the property.
 
-**TotalBathrooms:** A combined count of all full and half bathrooms. 
+**TotalBathrooms:** A combined count of all full and half bathrooms.
 
-**TotalSquareFootage:** The total area of the home, combining both above-ground living space and basement space.
+**TotalSquareFootage:** The total area of the home, combining both
+above-ground living space and basement space.
 
 **HouseAge:** The age of the house at the time it was sold.
 
-**TotalGarageSize:** A combined measure of garage square footage and car capacity.
+**TotalGarageSize:** A combined measure of garage square footage and car
+capacity.
 
-**TotalPorchArea:** The sum of all porch spaces, including open, enclosed, and screened porches.
+**TotalPorchArea:** The sum of all porch spaces, including open,
+enclosed, and screened porches.
 
-**HasPool:** A binary indicator showing whether the property includes a pool. 
+**HasPool:** A binary indicator showing whether the property includes a
+pool.
 
 **HasFence:** A binary indicator for the presence of a fence.
 
-**HasFireplace:** A binary variable denoting whether the house has one or more fireplaces.
+**HasFireplace:** A binary variable denoting whether the house has one
+or more fireplaces.
 
-**HasMiscFeature:** A binary indicator for the presence of additional features like sheds or tennis courts. 
+**HasMiscFeature:** A binary indicator for the presence of additional
+features like sheds or tennis courts.
 
-**OverallQualityScore:** A composite rating reflecting the overall quality and condition of the home.  
+**OverallQualityScore:** A composite rating reflecting the overall
+quality and condition of the home.
 
-These features were carefully chosen due to their strong influence on property value and were derived by combining or transforming relevant variables from the original dataset.
+These features were carefully chosen due to their strong influence on
+property value and were derived by combining or transforming relevant
+variables from the original dataset.
 
 ## Creating New Features
 
-```r
+``` r
 ames_data$TotalBathrooms <- ames_data$Full.Bath + (ames_data$Half.Bath * 0.5) + ames_data$Bsmt.Full.Bath + (ames_data$Bsmt.Half.Bath * 0.5)
 
 ames_data$TotalSquareFootage <- ames_data$Gr.Liv.Area + ames_data$BsmtFin.SF.1 + ames_data$BsmtFin.SF.2 + ames_data$X1st.Flr.SF + ames_data$X2nd.Flr.SF
@@ -464,12 +478,11 @@ ames_data$OverallQualityScore <- ames_data$Overall.Qual * ames_data$Overall.Cond
 # Check the first few rows of the new dataset
 ```
 
-
-**Check the first few rows of the new dataset ** 
+**Check the first few rows of the new dataset**
 
 Select the required columns for the new dataset
 
-```r
+``` r
 head(Selected_Ames_Data)
 ```
 
@@ -478,19 +491,20 @@ Selected_Ames_Data <- ames_data[c("SalePrice", "TotalBathrooms", "TotalSquareFoo
 head(Selected_Ames_Data)
 ```
 
-
 ------------------------------------------------------------------------
 
 # Model Training, Evaluation, and Feature Importance
 
-## Data Preprocessing 
+## Data Preprocessing
+
 ::: panel-tabset
-## Data Splitting  {.hscroll .scrollable}
+## Data Splitting {.hscroll .scrollable}
 
 Split the dataset into 80% training and 20% testing.
 
 Ensures model evaluation is unbiased.
-```r
+
+``` r
 set.seed(123)
 trainIndex <- createDataPartition(Selected_Ames_Data$SalePrice, p = 0.8, list = FALSE)
 train <- Selected_Ames_Data[trainIndex, ]
@@ -512,10 +526,13 @@ cat("Test set size:", nrow(test), "\n")
 ```
 
 ## Feature Scaling
-Standardize numerical features so that all variables are on the same scale. (mean = 0, sd = 1).
+
+Standardize numerical features so that all variables are on the same
+scale. (mean = 0, sd = 1).
 
 Important for regularization techniques like LASSO.
-```r
+
+``` r
 # Standardize numerical features
 preProc <- preProcess(train[, -1], method = c("center", "scale"))
 train_scaled <- predict(preProc, train)
@@ -530,19 +547,20 @@ train_scaled <- predict(preProc, train)
 test_scaled <- predict(preProc, test)
 cat("scaling and centering complete.\n")
 ```
-
 :::
 
-## LASSO Model Traning and Evaluation 
+## LASSO Model Traning and Evaluation
+
 ::: panel-tabset
-## Model Training  {.hscroll .scrollable}
+## Model Training {.hscroll .scrollable}
+
 Convert data to matrices for modeling.
 
 Train LASSO model with cross-validation to find best lambda.
 
 Fit final model using selected lambda.
 
-```r
+``` r
 x_train <- model.matrix(SalePrice ~ ., train_scaled)[, -1]
 y_train <- train_scaled$SalePrice
 x_test <- model.matrix(SalePrice ~ ., test_scaled)[, -1]
@@ -566,10 +584,13 @@ best_lambda <- cv_lasso$lambda.min
 
 lasso_model <- glmnet(x_train, y_train, alpha = 1, lambda = best_lambda)
 ```
-## Model Evaluation 
+
+## Model Evaluation
+
 ::: panel-tabset
 # Manual Evaluation
-```r
+
+``` r
 # Predict on test data
 y_pred <- predict(lasso_model, s = best_lambda, newx = x_test)
 
@@ -578,7 +599,6 @@ mse <- mean((y_test - y_pred)^2)
 r_squared <- 1 - sum((y_test - y_pred)^2) / sum((y_test - mean(y_test))^2)
 
 cat("MSE:", mse, "\nR-squared:", r_squared)
-
 ```
 
 ```{r}
@@ -591,8 +611,10 @@ r_squared <- 1 - sum((y_test - y_pred)^2) / sum((y_test - mean(y_test))^2)
 
 cat("MSE:", mse, "\nR-squared:", r_squared)
 ```
-# Top Features 
-```r
+
+# Top Features
+
+``` r
 # Extract feature importance
 lasso_coeffs <- coef(lasso_model, s = best_lambda)
 feature_importance <- data.frame(Feature = rownames(lasso_coeffs), Coefficient = as.vector(lasso_coeffs))
@@ -601,6 +623,7 @@ feature_importance <- feature_importance[order(abs(feature_importance$Coefficien
 # Display top 5 important features
 head(feature_importance, 5)
 ```
+
 ```{r}
 # Extract feature importance
 lasso_coeffs <- coef(lasso_model, s = best_lambda)
@@ -613,7 +636,8 @@ head(feature_importance, 5)
 ```
 
 # Cross validation with top features
-```r
+
+``` r
 # Perform 5-fold cross-validation to evaluate the model
 cv_lasso <- cv.glmnet(x_train, y_train, alpha = 1, nfolds = 5)
 
@@ -631,7 +655,6 @@ r_squared_cv <- 1 - sum((y_test - y_pred_cv)^2) / sum((y_test - mean(y_test))^2)
 
 cat("MSE from Cross-Validation: ", mse_cv, "\n")
 cat("R-squared from Cross-Validation: ", r_squared_cv, "\n")
-
 ```
 
 ```{r}
@@ -662,10 +685,16 @@ cat("R-squared from Cross-Validation: ", r_squared_cv, "\n")
 # Results and Conclusion
 
 ## Results
+
 ::: panel-tabset
 # Residuals Distribution {.hscroll .scrollable}
-The histogram shows the distribution of residuals (prediction errors) after cleaning, with no non-finite values. Residuals are centered around zero, indicating a good fit of the model to the data, with no significant bias.
-```r
+
+The histogram shows the distribution of residuals (prediction errors)
+after cleaning, with no non-finite values. Residuals are centered around
+zero, indicating a good fit of the model to the data, with no
+significant bias.
+
+``` r
 # Calculate residuals and clean up any non-finite values
 residuals_cv_clean <- na.omit(y_test - y_pred_cv)
 
@@ -675,8 +704,8 @@ ggplot(data.frame(residuals_cv_clean), aes(x = residuals_cv_clean)) +
   scale_x_continuous(labels = scales::label_number()) +  # Remove scientific notation on x-axis
   labs(title = "Residuals Distribution (Cleaned)", x = "Residuals", y = "Frequency") +
   theme_minimal()
-
 ```
+
 ```{r}
 # Calculate residuals and clean up any non-finite values
 residuals_cv_clean <- na.omit(y_test - y_pred_cv)
@@ -689,14 +718,20 @@ ggplot(data.frame(residuals_cv_clean), aes(x = residuals_cv_clean)) +
   theme_minimal()
 
 ```
+
 # Cross-Validation Curve
-The cross-validation curve shows the relationship between the cross-validation error and lambda (regularization parameter). The optimal value of lambda is chosen at the minimum error (lambda.min), balancing model performance and complexity.
-```r
+
+The cross-validation curve shows the relationship between the
+cross-validation error and lambda (regularization parameter). The
+optimal value of lambda is chosen at the minimum error (lambda.min),
+balancing model performance and complexity.
+
+``` r
 # Plot cross-validation curve
 plot(cv_lasso)
 title("Cross-validation Error vs Log(Lambda)", line = 2.5)
-
 ```
+
 ```{r}
 # Plot cross-validation curve
 plot(cv_lasso)
@@ -705,15 +740,20 @@ title("Cross-validation Error vs Log(Lambda)", line = 2.5)
 ```
 
 # Coefficient Path
-The coefficient path plot illustrates how feature coefficients change as lambda increases. As regularization strengthens, less important features' coefficients shrink to zero, indicating which variables are most influential in predicting house prices.
-```r
+
+The coefficient path plot illustrates how feature coefficients change as
+lambda increases. As regularization strengthens, less important
+features' coefficients shrink to zero, indicating which variables are
+most influential in predicting house prices.
+
+``` r
 lasso_full <- glmnet(x_train, y_train, alpha = 1)
 
 # Plot coefficient paths
 plot(lasso_full, xvar = "lambda", label = TRUE)
 title("LASSO Coefficient Path")
-
 ```
+
 ```{r}
 lasso_full <- glmnet(x_train, y_train, alpha = 1)
 
@@ -724,8 +764,13 @@ title("LASSO Coefficient Path")
 ```
 
 # Non-Zero Coefficients
-The bar plot shows the non-zero coefficients retained by the LASSO model after regularization. These are the most influential features in predicting house prices, with higher coefficients indicating greater importance.
-```r
+
+The bar plot shows the non-zero coefficients retained by the LASSO model
+after regularization. These are the most influential features in
+predicting house prices, with higher coefficients indicating greater
+importance.
+
+``` r
 # Get non-zero coefficients
 coef_lasso <- coef(lasso_model)
 non_zero_coef <- coef_lasso[coef_lasso[, 1] != 0, , drop = FALSE]
@@ -741,7 +786,8 @@ ggplot(non_zero_df, aes(x = reorder(Feature, Coefficient), y = Coefficient)) +
   coord_flip() +
   labs(title = "Selected Features by LASSO", x = "Feature", y = "Coefficient") +
   theme_minimal()
-``` 
+```
+
 ```{r}
 coef_lasso <- coef(lasso_model)
 non_zero_coef <- coef_lasso[coef_lasso[, 1] != 0, , drop = FALSE]
@@ -757,27 +803,31 @@ ggplot(non_zero_df, aes(x = reorder(Feature, Coefficient), y = Coefficient)) +
   coord_flip() +
   labs(title = "Selected Features by LASSO", x = "Feature", y = "Coefficient") +
   theme_minimal()
-``` 
-
+```
 :::
+
 ## Conclusion
 
-Efficient Feature Selection:
-Lasso helped identify the most influential predictors of house prices by shrinking less important coefficients to zero.
+Efficient Feature Selection: Lasso helped identify the most influential
+predictors of house prices by shrinking less important coefficients to
+zero.
 
-Improved Model Simplicity & Interpretability:
-The final model is not only more accurate but also easier to understand, which is valuable for both analysts and stakeholders.
+Improved Model Simplicity & Interpretability: The final model is not
+only more accurate but also easier to understand, which is valuable for
+both analysts and stakeholders.
 
-Reduced Overfitting:
-By penalizing model complexity, Lasso enhances generalizability to new, unseen data.
+Reduced Overfitting: By penalizing model complexity, Lasso enhances
+generalizability to new, unseen data.
 
 Key Takeaways:
 
-TotalSquareFootage, OverallQualityScore, and GarageSize emerged as strong predictors.
+TotalSquareFootage, OverallQualityScore, and GarageSize emerged as
+strong predictors.
 
 Binary indicators like HasPool or HasFireplace added meaningful context.
 
-Lasso is ideal when dealing with many features and potential multicollinearity.
+Lasso is ideal when dealing with many features and potential
+multicollinearity.
 
 Future Work:
 
@@ -786,8 +836,6 @@ Compare with Ridge and Elastic Net for performance.
 Apply cross-validation for more robust tuning.
 
 Explore interactions and nonlinear relationships.
-
-
 
 ------------------------------------------------------------------------
 

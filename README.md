@@ -108,9 +108,20 @@ This project builds on:
 - Hastie et al. (2015) – Statistical Learning with Sparsity  
 - Xu et al. (2012) – Robust Regression and LASSO  
 - Hill (2016), Jonas & Cook (2018), Lee et al. (2020) – Practical LASSO applications  
-- [Full references in final report](#references)
+- [Full references in final report](#https://matharipavani.github.io/Lasso_Regression/)
 
 ---
 
+## 📌 Future Work
+
+- Add comparison models (Ridge, Elastic Net)  
+- Use non-linear features or interaction terms  
+- Build a web app using R Shiny for user input  
+- Extend to real estate datasets from other regions  
+
+## 📫 Contact
+
+📧 pavani.mathari@example.com  
+🌐 GitHub/LinkedIn (https://github.com/MathariPavani)
 
 
